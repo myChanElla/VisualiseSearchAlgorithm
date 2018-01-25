@@ -1,0 +1,28 @@
+package visualisation.graph;
+import java.util.LinkedHashMap;
+
+import basics.Node;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.paint.Color;
+
+@SuppressWarnings("serial")
+public class GraphVisualiser extends JFXPanel {
+	private LinkedHashMap<Integer,Node> graph;
+
+	/**
+	 * Create the panel.
+	 * @param graph, the graph to depict.
+	 */
+	public GraphVisualiser(LinkedHashMap <Integer, Node> graph) {
+		this.graph = graph;		
+	}
+	
+	public void initialise(){
+		FxGraph FXG = new FxGraph(graph, this);
+		Scene scene = new Scene(FXG, 300, 300); //Change more sensible, resizable numbers!
+		scene.setFill(Color.GRAY);
+		this.setScene(scene);
+	}
+	
+}

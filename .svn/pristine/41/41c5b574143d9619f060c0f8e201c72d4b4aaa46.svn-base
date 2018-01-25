@@ -1,0 +1,46 @@
+package visualisation.grid;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
+import basics.Coordinate;
+
+@SuppressWarnings("serial")
+public class NodeSquare extends JComponent
+{
+	Coordinate coord;
+	private Color colour;
+	
+	public NodeSquare(Coordinate coord)
+	{
+		this.coord = coord;
+	}
+	
+	@Override
+	public void paintComponent(Graphics g)
+	{
+		//System.out.println("repainting node " + coord + " as " + colour.toString());
+		super.paintComponent(g);
+		g.setColor(colour);
+		g.fillRect(0, 0, 1000, 1000);
+		g.setColor(Color.BLACK);
+		g.drawRect(1, 1, getWidth()-1, getHeight()-1);
+		JLabel label = new JLabel(coord.toString());
+		label.setBounds(5,0,70,25);
+		label.setFont(new Font("Serif", Font.BOLD, 8));
+		this.add(label);
+	}
+	
+	public void changeColour(Color col)
+	{
+		this.colour = col;
+	}
+	
+	public Coordinate getCoord()
+	{
+		return coord;
+	}
+}

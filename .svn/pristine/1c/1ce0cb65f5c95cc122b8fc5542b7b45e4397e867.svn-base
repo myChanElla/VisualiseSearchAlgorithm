@@ -1,0 +1,434 @@
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.Graphics;
+import javax.swing.SwingConstants;
+import javax.swing.JPanel;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+/**
+ * 
+ * @author Chrystal
+ *
+ */
+
+public class MainMenuUI extends JPanel {
+	
+	
+	private static JLabel lblNode0;
+	private static JLabel lblNode1;
+	private static JLabel lblNode2;
+	private static JLabel lblNode3;
+	private static JLabel lblNode4;
+	private static JLabel lblNode5; 
+	private static JLabel lblLine1;
+	private static JLabel lblLine2;
+	private static JLabel lblLine3;
+	private static JLabel lblLine4;
+	private static JLabel lblLine5;
+	
+	
+	public void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		this.setBackground(Color.WHITE);
+		g.setColor(Color.BLUE);
+		g.fillRect(25, 25, 100, 30);
+		
+		
+		
+	}
+	
+	private JFrame frame;
+	/**
+	 * @wbp.nonvisual location=-28,79
+	 */
+	private final JTextArea textArea = new JTextArea();
+	private JTextPane txtpnWelcome;
+	private JPanel panel_3;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+    
+	
+		
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try {
+					MainMenuUI window = new MainMenuUI();
+					window.frame.setVisible(true);
+					//RunTree();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+		});
+		
+	}
+	
+
+	/**
+	 * Create the application.
+	 */
+
+	
+	public MainMenuUI() {
+		initialize();
+		
+		
+	}
+	
+	
+
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.getContentPane().setBackground(new Color(192, 192, 192));
+		frame.setBounds(100, 100, 846, 475);
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{0, 0};
+		gridBagLayout.rowHeights = new int[]{0,0};
+		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+		frame.getContentPane().setLayout(gridBagLayout);
+		
+		JLabel lblVisualisingAi = new JLabel("Visualising AI");
+		lblVisualisingAi.setForeground(Color.LIGHT_GRAY);
+		GridBagConstraints gbc_lblVisualisingAi = new GridBagConstraints();
+		gbc_lblVisualisingAi.fill = GridBagConstraints.BOTH;
+		gbc_lblVisualisingAi.insets = new Insets(0, 0, 5, 5);
+		gbc_lblVisualisingAi.gridx = 0;
+		gbc_lblVisualisingAi.gridy = 0;
+		gbc_lblVisualisingAi.gridwidth= 10;
+		gbc_lblVisualisingAi.gridheight= 1;
+		lblVisualisingAi.setOpaque(true);
+		lblVisualisingAi.setBackground(new Color(210, 105, 30));
+		lblVisualisingAi.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		frame.getContentPane().add(lblVisualisingAi	, gbc_lblVisualisingAi);
+		lblVisualisingAi.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.LIGHT_GRAY);
+		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+		gbc_panel_1.gridheight = 5;
+		gbc_panel_1.gridwidth = 8;
+		gbc_panel_1.insets = new Insets(0, 0, 0, 5);
+		gbc_panel_1.fill = GridBagConstraints.BOTH;
+		gbc_panel_1.gridx = 0;
+		gbc_panel_1.gridy = 1;
+		frame.getContentPane().add(panel_1, gbc_panel_1);
+		GridBagLayout gbl_panel_1 = new GridBagLayout();
+		gbl_panel_1.columnWidths = new int[]{430, 247};
+		gbl_panel_1.rowHeights = new int[]{55, 0};
+		gbl_panel_1.columnWeights = new double[]{0.0, 1.0};
+		gbl_panel_1.rowWeights = new double[]{0.0, 1.0};
+		panel_1.setLayout(gbl_panel_1);
+		
+		txtpnWelcome = new JTextPane();
+		txtpnWelcome.setText("Welcome!");
+		txtpnWelcome.setForeground(new Color(210, 105, 30));
+		txtpnWelcome.setFont(new Font("Tahoma", Font.PLAIN, 29));
+		txtpnWelcome.setBackground(Color.DARK_GRAY);
+		GridBagConstraints gbc_txtpnWelcome = new GridBagConstraints();
+		gbc_txtpnWelcome.insets = new Insets(0, 0, 5, 5);
+		gbc_txtpnWelcome.fill = GridBagConstraints.BOTH;
+		gbc_txtpnWelcome.gridx = 0;
+		gbc_txtpnWelcome.gridy = 0;
+		panel_1.add(txtpnWelcome, gbc_txtpnWelcome);
+		
+		JTextPane txtpnProgramDescription = new JTextPane();
+		txtpnProgramDescription.setFont(new Font("Tahoma", Font.PLAIN, 19));
+		txtpnProgramDescription.setText("This program has been developed in order to teach you how some searching algorithms work\r\n\r\nOur program will allow you to explore Depth First Search, Breadth First Search and A* Search \r\n\r\nJust click the start button to learn how these searches work.");
+		txtpnProgramDescription.setForeground(new Color(210, 105, 30));
+		txtpnProgramDescription.setBackground(Color.DARK_GRAY);
+		GridBagConstraints gbc_txtpnProgramDescription = new GridBagConstraints();
+		gbc_txtpnProgramDescription.insets = new Insets(0, 0, 0, 5);
+		gbc_txtpnProgramDescription.fill = GridBagConstraints.BOTH;
+		gbc_txtpnProgramDescription.gridx = 0;
+		gbc_txtpnProgramDescription.gridy = 1;
+		panel_1.add(txtpnProgramDescription, gbc_txtpnProgramDescription);
+		
+		panel_3 = new JPanel();
+		panel_3.setBackground(new Color(192, 192, 192));
+		panel_3.setLayout(null);
+		GridBagConstraints gbc_panel_3 = new GridBagConstraints();
+		gbc_panel_3.gridheight = 2;
+		gbc_panel_3.fill = GridBagConstraints.BOTH;
+		gbc_panel_3.gridx = 1;
+		gbc_panel_3.gridy = 0;
+		panel_1.add(panel_3, gbc_panel_3);
+	
+		
+		
+		
+		
+		AddTree(panel_3);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(Color.LIGHT_GRAY);
+		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
+		gbc_panel_2.gridwidth = 2;
+		gbc_panel_2.gridheight = 5;
+		gbc_panel_2.insets = new Insets(0, 0, 0, 5);
+		gbc_panel_2.fill = GridBagConstraints.BOTH;
+		gbc_panel_2.gridx = 8;
+		gbc_panel_2.gridy = 1;
+		frame.getContentPane().add(panel_2, gbc_panel_2);
+		GridBagLayout gbl_panel_2 = new GridBagLayout();
+		gbl_panel_2.columnWidths = new int[]{0};
+		gbl_panel_2.rowHeights = new int[]{0,0};
+		gbl_panel_2.columnWeights = new double[]{1};
+		gbl_panel_2.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+		panel_2.setLayout(gbl_panel_2);
+		
+		
+		
+		
+		
+		JButton btnHelp = new JButton("Help");
+		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
+		gbc_btnHelp.fill = GridBagConstraints.BOTH;
+		gbc_btnHelp.insets = new Insets(0, 0, 5, 5);
+		gbc_btnHelp.gridx = 0;
+		gbc_btnHelp.gridy = 0;
+		panel_2.add(btnHelp, gbc_btnHelp);
+		btnHelp.setForeground(new Color(210, 105, 30));
+		btnHelp.setBackground(Color.DARK_GRAY);
+		btnHelp.setOpaque(true);
+		btnHelp.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		
+		btnHelp.addMouseListener(new MouseAdapter()
+		{
+            public void mouseEntered(MouseEvent evt)
+            {
+            	
+            	btnHelp.setBackground(new Color(210, 105, 30));
+            	btnHelp.setForeground(Color.DARK_GRAY);
+            }
+            public void mouseExited(MouseEvent evt)
+            {
+                btnHelp.setBackground(Color.DARK_GRAY);
+            	btnHelp.setForeground(new Color(210, 105, 30));
+            }
+   
+		});
+		
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				frame.setVisible(false);
+				HelpUI.loadHelp();
+		
+				}
+			});
+		
+		JButton btnStart = new JButton("Start");
+		GridBagConstraints gbc_btnStart = new GridBagConstraints();
+		gbc_btnStart.fill = GridBagConstraints.BOTH;
+		gbc_btnStart.insets = new Insets(0, 0, 0, 5);
+		gbc_btnStart.gridx = 0;
+		gbc_btnStart.gridy = 9;
+		panel_2.add(btnStart, gbc_btnStart);
+		btnStart.setBackground(Color.DARK_GRAY);
+		btnStart.setOpaque(true);
+		btnStart.setForeground(new Color(210, 105, 30));
+		btnHelp.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+
+		btnStart.addMouseListener(new MouseAdapter()
+		{
+            public void mouseEntered(MouseEvent evt)
+            {
+            	
+            	btnStart.setBackground(new Color(210, 105, 30));
+            	btnStart.setForeground(Color.DARK_GRAY);
+            }
+            public void mouseExited(MouseEvent evt)
+            {
+                btnStart.setBackground(Color.DARK_GRAY);
+            	btnStart.setForeground(new Color(210, 105, 30));
+            }
+   
+		});
+		
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				frame.setVisible(false);
+				GridMaker.openUI();
+		
+				}
+			});
+		
+		
+		
+		
+	}
+	
+	public void AddTree(JPanel panel)
+	{
+				    	lblNode0 = new JLabel("o");
+				    	lblNode0.setBounds(137, 44, 74, 69);
+				    	lblNode0.setFont(new Font("Corbel", Font.PLAIN, 70));
+				    	lblNode0.setForeground(new Color(210, 105, 30));
+				    	lblNode0.setBorder(null);
+				    	panel.add(lblNode0);
+				    		//	lblNode5.setVisible(false);
+				    			
+				    			lblLine1 = new JLabel("/");
+				    			lblLine1.setBounds(110, 96, 37, 81);
+				    			lblLine1.setForeground(Color.DARK_GRAY);
+				    			lblLine1.setFont(new Font("MV Boli", Font.PLAIN, 50));
+				    			lblLine1.setBorder(null);
+				    			panel.add(lblLine1);
+				    	//	lblLine1.setVisible(false);
+				    		
+				    	
+				    		lblLine2 = new JLabel("\\");
+				    		lblLine2.setBounds(179, 96, 26, 81);
+				    		lblLine2.setForeground(Color.DARK_GRAY);
+				    		lblLine2.setFont(new Font("MV Boli", Font.PLAIN, 50));
+				    		lblLine2.setBorder(null);
+				    		panel.add(lblLine2);
+				    	//	lblNode0.setVisible(false);
+				    		
+				    	    lblNode1 = new JLabel("o");
+				    	    lblNode1.setBounds(80, 135, 37, 86);
+				    	    lblNode1.setForeground(new Color(210, 105, 30));
+				    	    lblNode1.setFont(new Font("Corbel", Font.PLAIN, 70));
+				    	    lblNode1.setBorder(null);
+				    	    panel.add(lblNode1);
+				    //	lblNode1.setVisible(false);
+				    	
+				    	lblNode2 = new JLabel("o");
+				    	lblNode2.setBounds(189, 135, 37, 86);
+				    	lblNode2.setForeground(new Color(210, 105, 30));
+				    	lblNode2.setFont(new Font("Corbel", Font.PLAIN, 70));
+				    	lblNode2.setBorder(null);
+				    	panel.add(lblNode2);
+				//	lblLine2.setVisible(false);
+					
+					
+					lblLine3 = new JLabel("/");
+					lblLine3.setBounds(57, 181, 26, 81);
+					lblLine3.setForeground(Color.DARK_GRAY);
+					lblLine3.setFont(new Font("MV Boli", Font.PLAIN, 50));
+					lblLine3.setBorder(null);
+					panel.add(lblLine3);
+			//	lblLine3.setVisible(false);
+
+				
+				lblLine4 = new JLabel("\\");
+				lblLine4.setBounds(110, 188, 26, 81);
+				lblLine4.setForeground(Color.DARK_GRAY);
+				lblLine4.setFont(new Font("MV Boli", Font.PLAIN, 50));
+				lblLine4.setBorder(null);
+				panel.add(lblLine4);
+			//	lblLine4.setVisible(false);
+				
+				
+				lblLine5 = new JLabel("\\");
+				lblLine5.setBounds(227, 181, 26, 81);
+				lblLine5.setForeground(Color.DARK_GRAY);
+				lblLine5.setFont(new Font("MV Boli", Font.PLAIN, 50));
+				lblLine5.setBorder(null);
+				panel.add(lblLine5);
+			//	lblNode2.setVisible(false);
+						
+				lblNode3 = new JLabel("o");
+				lblNode3.setBounds(31, 230, 37, 86);
+				lblNode3.setForeground(new Color(210, 105, 30));
+				lblNode3.setFont(new Font("Corbel", Font.PLAIN, 70));
+				lblNode3.setBorder(null);
+				panel.add(lblNode3);
+		//	lblNode3.setVisible(false);
+			
+			lblNode4 = new JLabel("o");
+			lblNode4.setBounds(120, 230, 37, 86);
+			lblNode4.setForeground(new Color(210, 105, 30));
+			lblNode4.setFont(new Font("Corbel", Font.PLAIN, 70));
+			lblNode4.setBorder(null);
+			panel.add(lblNode4);
+		//	lblNode4.setVisible(false);
+					
+			lblNode5 = new JLabel("o");
+			lblNode5.setBounds(237, 230, 37, 86);
+			lblNode5.setForeground(new Color(210, 105, 30));
+			lblNode5.setFont(new Font("Corbel", Font.PLAIN, 70));
+			lblNode5.setBorder(null);
+			panel.add(lblNode5);
+	//	lblLine5.setVisible(false);
+	}
+	
+	
+	
+	public static void RunTree(){
+		try {
+			for(int i = 0; i < 20; i++){
+				lblNode0.setVisible(false);
+	
+				lblLine1.setVisible(false);
+				lblLine2.setVisible(false);
+				lblNode1.setVisible(false);
+				lblNode2.setVisible(false);
+		
+				lblLine3.setVisible(false);
+				lblLine4.setVisible(false);
+				lblNode3.setVisible(false);
+				lblNode4.setVisible(false);
+		
+				lblNode5.setVisible(false);
+				lblLine5.setVisible(false);
+				
+				lblNode0.setVisible(true);
+				Thread.sleep(1500);
+				lblLine1.setVisible(true);
+				lblNode1.setVisible(true);
+				Thread.sleep(1500);
+				lblLine2.setVisible(true);
+				lblNode2.setVisible(true);
+				Thread.sleep(1500);
+				lblLine3.setVisible(true);
+				lblNode3.setVisible(true);
+				Thread.sleep(1500);
+				lblLine4.setVisible(true);
+				lblNode4.setVisible(true);
+				Thread.sleep(1500);
+				lblNode5.setVisible(true);
+				lblLine5.setVisible(true);
+				Thread.sleep(1500);
+			}	
+			
+		} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+
+	
+	
+}

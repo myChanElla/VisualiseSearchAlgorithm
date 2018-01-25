@@ -1,0 +1,149 @@
+package search_algs;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import basics.Node;
+import javafx.application.Platform;
+import javafx.scene.paint.Color;
+import visualisation.VisualisationUI;
+import visualisation.datastructure.DataStructHelper;
+import visualisation.grid.GridVisualiser;
+import visualisation.pseudocode.PseudoCodeGen;
+import visualisation.pseudocode.PseudoCodeStrings;
+
+public class Astar 
+{
+	PseudoCodeGen pseudoGen = new PseudoCodeGen();
+	PseudoCodeStrings pseudoStrings = new PseudoCodeStrings();
+	private int speed = 1000;
+	public GridVisualiser grid = VisualisationUI.getGrid();
+	DataStructHelper dataStructHelper = new DataStructHelper();
+
+	public Astar(){
+	}
+	
+	public Node astar (Node start, Node goal) 
+	{
+		try
+		{
+			//set start and goal node colors in javafx thread
+			Platform.runLater(new Runnable() { 
+	            @Override
+	            public void run() {
+	            	start.setColor(Color.GREEN);
+	            }
+	        });
+			
+			pseudoGen.addPseudoText("Starting A* Search ...\n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			pseudoGen.addPseudoText("Creating PriorityQueue<Node> frontier \n");
+			PriorityQueue<Node> frontier = new PriorityQueue<Node>();
+			pseudoGen.addPseudoText("Creating HashSet<Node> visited \n");
+			Set<Node> visited = new HashSet<Node>();
+			pseudoGen.addPseudoText("Creating LinkedHashMap<Node> distmap \n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			Map<Node, Double> distmap = new LinkedHashMap<Node, Double>();
+			TimeUnit.MILLISECONDS.sleep(speed);
+	
+			start.genFValue(goal);
+			frontier.add(start);
+			dataStructHelper.setNodesFromPriorityQueue(frontier);
+			pseudoGen.addPseudoText(pseudoStrings.addNode + start.toString() + "\n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			distmap.put(start, 0.0);
+	
+			pseudoGen.addPseudoText(pseudoStrings.whileLoop);
+			TimeUnit.MILLISECONDS.sleep(speed);
+	        while(!frontier.isEmpty()) 
+	        {
+				Node x = frontier.poll();
+				dataStructHelper.setNodesFromPriorityQueue(frontier);
+				if(x != start && x != goal && x.getOpen())
+				{
+					grid.changeColour(x.coord);
+					
+					//set node color in jfx thread
+					Platform.runLater(new Runnable() { 
+			            @Override
+			            public void run() {
+			            	x.setColor(Color.ORANGE);
+			            }
+			        });
+				}
+				pseudoGen.addPseudoText(pseudoStrings.pollNode + x.toString() + "\n");
+				TimeUnit.MILLISECONDS.sleep(speed);
+				pseudoGen.addPseudoText(pseudoStrings.checkNode + x.toString() + "\n");
+				if(!visited.contains(x) && x.getOpen())
+				{
+					if (x == goal) 
+					{
+						pseudoGen.addPseudoText(x.toString() + pseudoStrings.doesEqual + "}" + "\n");
+						pseudoGen.addPseudoText(pseudoStrings.completed);
+						Platform.runLater(new Runnable() { 
+				            @Override
+				            public void run() {
+				    			goal.setColor(Color.RED);	
+				            }
+				        });
+						return x;
+					}
+					else
+					{
+						visited.add(x);
+						if (x != start){
+							//set node color in jfx thread
+							Platform.runLater(new Runnable() { 
+					            @Override
+					            public void run() {
+					            	x.setColor(Color.ORANGE);
+					            }
+					        });
+						}
+						pseudoGen.addPseudoText(pseudoStrings.addVisited + x.toString() + "\n");
+						TimeUnit.MILLISECONDS.sleep(speed);
+						ArrayList<Node> children = new ArrayList<Node>();
+						pseudoGen.addPseudoText(pseudoStrings.addChildren + x.toString() + "\n");
+						TimeUnit.MILLISECONDS.sleep(speed);
+						children.addAll(x.getChildren());
+						for(Node child : children)
+						{
+							pseudoGen.addPseudoText(pseudoStrings.genH + child.toString() + "\n");
+							TimeUnit.MILLISECONDS.sleep(speed);
+							child.genFValue(goal);
+							Platform.runLater(new Runnable() { 
+					            @Override
+					            public void run() {
+					            	child.setSearchParent(x);
+					            }
+					        });
+						}
+						Set<Node> c = x.getChildren();
+						frontier.addAll(c);
+						dataStructHelper.setNodesFromPriorityQueue(frontier);
+						TimeUnit.MILLISECONDS.sleep(speed);
+					}
+				}
+				for(Node n : frontier){
+					System.out.println(n.toString());
+				}
+				System.out.println("\n");
+	        }
+	        pseudoGen.addPseudoText(pseudoStrings.failed + "}");
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void setSpeed(int s)
+	{
+		speed = s;
+	}
+}

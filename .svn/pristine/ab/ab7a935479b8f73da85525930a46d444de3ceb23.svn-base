@@ -1,0 +1,39 @@
+/**
+	Construction of graphic node
+ */
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+
+import javax.swing.JComponent;
+
+@SuppressWarnings("serial")
+public class NodeCircle extends JComponent {
+
+	//private Line2D.Double edge;
+	public Ellipse2D.Double circle;
+	private int coordScaling = 50;
+	private Node node;
+
+	/**
+		Create a node
+	 */
+	public NodeCircle(Node node){
+		this.node = node;
+		//Draw a circle representing each node
+		circle = new Ellipse2D.Double(node.coord.x *coordScaling, node.coord.y*coordScaling, 10, 10);		
+	}
+	/**
+		Draw the node in graphics
+	 */
+	public void draw (Graphics2D g2)
+	{
+		//Set color to that of the node
+		g2.setColor(Color.decode(node.hexCC));
+		//Draw the circle representing the node
+		g2.draw(circle);
+	}
+
+}

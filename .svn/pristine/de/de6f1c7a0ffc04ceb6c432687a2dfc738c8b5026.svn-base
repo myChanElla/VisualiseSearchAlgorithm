@@ -1,0 +1,139 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+public class Astar 
+{
+	PseudoCodeGen pseudoGen = new PseudoCodeGen();
+	PseudoCodeStrings pseudoStrings = new PseudoCodeStrings();
+	private int speed = 10;
+	private Map<Node, Node> pathmap;
+	private boolean foundnode = false;
+	public GridVisualiser grid = VisualisationUI.getGrid();
+	
+	public Astar(){
+		this.pathmap = new LinkedHashMap<Node,Node>();
+	}
+	
+	public Node astar (Node start, Node goal) 
+	{
+		try
+		{
+			pseudoGen.addPseudoText("Starting A* Search \n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			pseudoGen.addPseudoText("Creating PriorityQueue<Node> frontier \n");
+			PriorityQueue<Node> frontier = new PriorityQueue<Node>();
+			pseudoGen.addPseudoText("Creating HashSet<Node> visited \n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			Set<Node> visited = new HashSet<Node>();
+			pseudoGen.addPseudoText("Creating LinkedHashMap<Node> distmap \n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			Map<Node, Double> distmap = new LinkedHashMap<Node, Double>();
+	
+			start.genFValue(goal);
+			frontier.add(start);
+			pseudoGen.addPseudoText(pseudoStrings.addNode + start.toString() + "\n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			distmap.put(start, 0.0);
+			pathmap.put(start, start);
+	
+			Node x;
+			Set<Node> successors;
+			pseudoGen.addPseudoText(pseudoStrings.whileLoop);
+			TimeUnit.MILLISECONDS.sleep(speed);
+	        while(!frontier.isEmpty()) 
+	        {
+				x = frontier.poll();
+				if(x != start && x != goal && x.getOpen())
+				{
+					grid.changeColour(x.coord);
+				}
+				pseudoGen.addPseudoText(pseudoStrings.pollNode + x.toString() + "\n");
+				TimeUnit.MILLISECONDS.sleep(speed);
+				pseudoGen.addPseudoText(pseudoStrings.checkNode + x.toString() + "\n");
+				if(!visited.contains(x) && x.getOpen())
+				{
+					if (x == goal) 
+					{
+						pseudoGen.addPseudoText(x.toString() + pseudoStrings.doesEqual + "}" + "\n");
+						pseudoGen.addPseudoText(pseudoStrings.completed);
+						foundnode = true;
+						return x;
+					}
+					visited.add(x);
+					pseudoGen.addPseudoText(pseudoStrings.addVisited + x.toString() + "\n");
+					TimeUnit.MILLISECONDS.sleep(speed);
+					successors = x.getChildren();
+					pseudoGen.addPseudoText(pseudoStrings.addChildren + x.toString() + "\n");
+					TimeUnit.MILLISECONDS.sleep(speed);
+					Iterator<Node> iter = successors.iterator();
+					
+					Node succ;
+					//loop through all the children
+					while (iter.hasNext()) {
+						succ = iter.next();
+	                    if (!visited.contains(succ)) {
+	            	        pseudoGen.addPseudoText(pseudoStrings.genH + succ.toString());
+	            			TimeUnit.MILLISECONDS.sleep(speed);
+	                        double cost = distmap.get(x) + distFunc(x, succ);
+	                        pathmap.put(succ, x);
+	                        if (!frontier.contains(succ) || cost < distmap.get(succ)) {
+	                            distmap.put(succ, cost);
+	                            if (cost < distmap.get(succ)) {
+	                                succ.setPriority(heuristic(succ, distmap.get(succ), goal));
+	                            }
+	                            if (!frontier.contains(succ)) {
+	                                succ.setPriority(heuristic(succ, distmap.get(succ), goal));
+	                                frontier.add(succ);
+	                        		pseudoGen.addPseudoText(pseudoStrings.addNode + succ.toString() + "\n");
+	                            }
+	                        }
+	                    }
+	                }
+				}
+			}
+	        pseudoGen.addPseudoText(pseudoStrings.failed + "}");
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	private double heuristic(Node n1, Double distance, Node end){
+		Coordinate node = n1.getCoord();
+		Coordinate goal = end.getCoord();
+		return Math.sqrt(Math.pow(node.getX() - goal.getX(), 2)
+						+ Math.pow(node.getY() - goal.getY() , 2)) 
+				+ distance;
+	}
+	private double distFunc(Node n1, Node n2){
+		Coordinate node1 = n1.getCoord();
+		Coordinate node2 = n2.getCoord();
+		return Math.sqrt(Math.pow(node1.getX() - node2.getX(), 2)
+						+ Math.pow(node1.getY() - node2.getY() , 2));
+	}
+	
+	public ArrayList<Node> getPath(Node start, Node goal){
+		ArrayList<Node> list = new ArrayList<Node>();
+		if(!foundnode){ 
+			System.out.print("goal node not reachable");
+			list.add(start);
+			return list;
+		}
+		Node z = goal;
+		list.add(z);
+		while (!(z.equals(start))) {
+            z = pathmap.get(z);
+            list.add(z);
+        }
+		Collections.reverse(list);
+        return list;
+	}
+}

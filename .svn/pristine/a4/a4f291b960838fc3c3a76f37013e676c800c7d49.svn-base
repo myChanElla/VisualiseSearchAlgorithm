@@ -1,0 +1,638 @@
+package uielements;
+import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import java.awt.Color;
+
+import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
+import java.awt.event.ActionEvent;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.text.DefaultCaret;
+
+import javafx.application.Platform;
+import structures_dataTypes.Node;
+import structures_dataTypes.Struct;
+import visualisation.datastructure.DataStructVis;
+import visualisation.graph.GraphVisualiser;
+import visualisation.grid.GridMaker;
+import visualisation.grid.GridVisualiser;
+import visualisation.pseudocode.TextStrings;
+
+/**
+ * @author Michael Platts, Creation of the UI, speed buttons, radio buttons to control visualisation selection, grid visualisation, pseudo code visualisation
+ * @author Chrystal Gosden, Refactoring, design of the GUI and grid bag layout design.
+ * @author Matt Dean, graph visualisation
+ * @author Matthias, graph visualisation
+ * @author Adedayo, Data structure visualisation, pseudo code visualisation
+ * @author Ella, grid visualisation
+ */
+public class VisualisationUI 
+{
+
+	private JFrame frame;
+	
+	private static String searchType; // Search type chosen by the user
+	private static LinkedHashMap<Integer, Node> graphLocal; // The graph that will be search through by the search algorithm
+	private static Node start; // Start node chosen by the user
+	private static Node goal; // Goal node chosen by the user
+ 
+	private static JPanel pseudoCodePanel = new JPanel(); // Panel containing the pseudo code text pane
+	private static JTextPane pseudoCodeTextPane = new JTextPane(); // Text Pane to display the pseudo code
+	private static JScrollPane scrollPanePseudo = new JScrollPane(); // Scroll pane containing the pseudo code text pane
+	private static JTextArea algorithmTextArea = new JTextArea(); // Text area to display the code for the search algorithm
+	private static JPanel gridPanel = new JPanel(); // Panel to display the grid visualisation
+
+	private static DataStructVis dataStructPanel = new DataStructVis(null); // Panel to display the data structure visualisation
+	private static Struct struct; // Data structure component
+	private static GridVisualiser grid; // Grid component for visualising 
+    private static GraphVisualiser graphPanel; // Panel to hold he graph visualisation
+	private VisualisationController controller = new VisualisationController(searchType, start, goal); // Controller for controlling how the search algorithm runs
+	private Thread searchThread; // The thread the search algorithm will run on
+	private static int pageNumber;  // Page number for displaying the correct help page
+	
+	/**
+	 * openUI method used to pass user inputs to launch the application 
+	 * @param search	- search method user selected
+	 * @param graph		- containing the nodes which will be searched
+	 * @param startN	- the start node user selected
+	 * @param endN		- the end node user selected 
+	 */
+	public static void openUI(String search, LinkedHashMap<Integer, Node> graph, Node startN, Node endN)
+	{
+		//The graph that has been generated for the search
+		graphLocal = graph;
+		//set up the search by getting the nodes from the graph and passing these to begin the search
+		start = graph.get(startN.coord.genHash());
+		goal = graph.get(endN.coord.genHash());
+		searchType = search;
+		setDataStructure();
+	
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try 
+				{
+					VisualisationUI window = new VisualisationUI();
+					window.frame.setVisible(true);
+				}
+				catch (Exception e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Sets the correct data structure to be visualised, page number for help page and the correct text of the current algorithm
+	 */
+	private static void setDataStructure() {
+		switch (searchType) {
+		case "Breadth First Search":
+			struct = Struct.QUEUE;
+			pageNumber = 3;
+			algorithmTextArea.setText(TextStrings.bfsAlgoText);
+			break;
+		
+		case "Depth First Search":
+			struct = Struct.STACK;
+			pageNumber = 2;
+			algorithmTextArea.setText(TextStrings.dfsAlgoText);
+			break;
+		
+		case "A* Search":
+			struct = Struct.PRIORITY_QUEUE;
+			pageNumber = 4;
+			algorithmTextArea.setText(TextStrings.astarAlgoText);
+			break;
+			
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public VisualisationUI() 
+	{
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() 
+	{
+		
+		Color backgroundcolor = new Color(50,62,79);
+		Color primarycolor = new Color(166,179,198);
+		Color accentcolor = new Color(0, 162, 232);
+		Color textcolor = Color.decode("#FAFAFA");
+		
+		frame = new JFrame();
+		frame.getContentPane().setBackground(backgroundcolor);
+		frame.getContentPane().setForeground(primarycolor);
+		frame.setBounds(5, 5, 1180, 822);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		frame.setLocationRelativeTo(null);
+		
+		
+		
+//---------------------------------------------- Set up tool bar menu------------------		
+		
+		UIPanel toolBarPanel = new UIPanel(Color.LIGHT_GRAY);
+		toolBarPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		toolBarPanel.setBounds(10, 11, 1145, 70);
+		frame.getContentPane().add(toolBarPanel);
+		
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{0, 0};
+		gridBagLayout.rowHeights = new int[]{0,0};
+		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+		gridBagLayout.rowWeights = new double[]{1.0, 1.0};
+		toolBarPanel.setLayout(gridBagLayout);
+	
+		//----------------------------------Start Button-----------------------------------
+		UIButton startBtn = new UIButton("");
+		startBtn.setImage("/imgs/start.png", "/imgs/startRoll.png");
+		startBtn.setToolTipText("Start Search");
+		startBtn.setGridBag(toolBarPanel, 4,0,1,1);
+			
+		//Create a new thread and start the search
+		startBtn.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if(searchThread == null)
+				{
+					searchThread = new Thread(controller);
+					searchThread.start();
+				}
+				else
+				{
+					controller.changeSpeed(1000);
+				}
+			}
+		});
+		
+		
+		//----------------------------------Speed Button-------------------------------------
+		UIButton speed2Btn = new UIButton("");
+		speed2Btn.setImage("/imgs/speed2.png","/imgs/speed2Roll.png");
+		speed2Btn.setToolTipText("Speed x20");
+		speed2Btn.setGridBag(toolBarPanel, 7, 0, 1, 1);
+	
+		speed2Btn.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				controller.changeSpeed(50);
+			}
+		});
+		
+		UIButton speed1Btn = new UIButton("");
+		speed1Btn.setImage("/imgs/speed1.png","/imgs/speed1Roll.png");
+		speed1Btn.setToolTipText("Speed x5");
+		speed1Btn.setGridBag(toolBarPanel, 6, 0, 1, 1);
+		
+		speed1Btn.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				controller.changeSpeed(200);
+			}
+		});
+		
+		//--------------------------------Pause Button------------------------------------
+		UIButton stopBtn = new UIButton("");
+		stopBtn.setImage("/imgs/stop.png","/imgs/stopRoll.png");
+		stopBtn.setToolTipText("Stop Search");
+		stopBtn.setGridBag(toolBarPanel, 5, 0, 1, 1);
+		stopBtn.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				controller.changeSpeed(Integer.MAX_VALUE);
+			}
+		});
+		
+//--------------------------------New Search Button-------------------------
+		UIButton btnNewSearch = new UIButton("Create New Search");
+		btnNewSearch.setGridBag(toolBarPanel, 8, 0, 1, 1);
+		btnNewSearch.setToolTipText("Return to Grid Maker to Create a New Search");
+						
+		btnNewSearch.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{	
+				GridMaker.refresh();
+				GridMaker.openUI();
+				refresh();
+				frame.setVisible(false);
+			}
+		});
+		
+//-------------------------------------Help Button------------------------------------
+		UIButton btnHelp = new UIButton("?");
+		btnHelp.setGridBag(toolBarPanel, 9, 0, 1, 1);
+		btnHelp.setToolTipText("Help");
+				
+		btnHelp.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{	
+				HelpUI.loadHelp(pageNumber);
+			}
+		});
+		
+//--------------------------------Selection Panel to choose which panel to show up on screen---------------
+		UIPanel SelectionPanel = new UIPanel(Color.LIGHT_GRAY);
+		SelectionPanel.setGridBag(toolBarPanel, 2, 0, 2, 1, new Insets(5, 5, 5, 5));
+			
+		GridBagLayout gridBagLayout_search = new GridBagLayout();
+		gridBagLayout_search.columnWidths = new int[]{0, 0};
+		gridBagLayout_search.rowHeights = new int[]{0,0};
+		gridBagLayout_search.columnWeights = new double[]{1.0, 1.0, 1.0};
+		gridBagLayout_search.rowWeights = new double[]{1.0, 1.0};
+		SelectionPanel.setLayout(gridBagLayout_search);
+
+		
+		
+//----------------------------------Radio Button to show each panel individually---------------------------
+		JRadioButton radioBtnGrid = new JRadioButton("Grid");
+		RadioButtonSetUp(radioBtnGrid, SelectionPanel, 0, 0);
+		radioBtnGrid.setToolTipText("Display Grid Only");
+				
+		JRadioButton radioBtnPseudoCode = new JRadioButton("Pseudo Code");
+		RadioButtonSetUp(radioBtnPseudoCode, SelectionPanel, 1, 0);
+		radioBtnPseudoCode.setToolTipText("Display Pseudo Code Only");
+			
+		JRadioButton radioBtnGraph = new JRadioButton("Graph");
+		RadioButtonSetUp(radioBtnGraph, SelectionPanel, 0, 1);
+		radioBtnGraph.setToolTipText("Display Graph Only");
+		
+		JRadioButton radioBtnStructure = new JRadioButton("Data Structure");
+		RadioButtonSetUp(radioBtnStructure, SelectionPanel, 1, 1);
+		radioBtnStructure.setToolTipText("Display Data Structure Only");
+		
+		JRadioButton radioBtnAll = new JRadioButton("All");
+		RadioButtonSetUp(radioBtnAll, SelectionPanel, 2, 0);
+		radioBtnAll.setToolTipText("Display All Visualisations");
+		
+		// Radio button for controlling view of the grid
+		radioBtnGrid.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if(radioBtnGrid.isSelected() == true)
+				{
+					gridPanel.setVisible(true);
+					grid.setVisible(true);
+					pseudoCodePanel.setVisible(false);
+					pseudoCodeTextPane.setVisible(false);
+					graphPanel.setVisible(false);
+					dataStructPanel.setVisible(false);
+					gridPanel.setSize(frame.getWidth()-35, frame.getHeight()-135);
+					grid.setBounds(250, 30, 580, 580);
+					radioBtnPseudoCode.setSelected(false);
+					radioBtnGraph.setSelected(false);
+					radioBtnStructure.setSelected(false);
+					radioBtnAll.setSelected(false);			
+				}
+				else 
+				{
+					GridPanelSmall();
+				}
+			}
+		});
+		
+		// Radio button for controlling pseudo code view 
+		radioBtnPseudoCode.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if(radioBtnPseudoCode.isSelected() == true)
+				{
+					pseudoCodePanel.setVisible(true);
+					pseudoCodeTextPane.setVisible(true);
+					scrollPanePseudo.setBounds(10, 11, 550, 630);
+					algorithmTextArea.repaint();
+					gridPanel.setVisible(false);
+					grid.setVisible(false);
+					graphPanel.setVisible(false);
+					dataStructPanel.setVisible(false);
+					pseudoCodePanel.setBounds(10, 85, frame.getWidth()-35, frame.getHeight()-135);
+					radioBtnGrid.setSelected(false);
+					radioBtnGraph.setSelected(false);
+					radioBtnStructure.setSelected(false);
+					radioBtnAll.setSelected(false);
+				}
+				else 
+				{
+					PseudoCodePanelSmall();
+				}
+			}
+		});
+		
+		// Radio button for controlling view of the graph
+		radioBtnGraph.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if(radioBtnGraph.isSelected() == true)
+				{
+					graphPanel.setVisible(true);
+					pseudoCodePanel.setVisible(false);
+					pseudoCodeTextPane.setVisible(false);
+					gridPanel.setVisible(false);
+					grid.setVisible(false);
+					dataStructPanel.setVisible(false);
+					graphPanel.setBounds(10, 85, frame.getWidth()-35, frame.getHeight()-135);
+					radioBtnPseudoCode.setSelected(false);
+					radioBtnGrid.setSelected(false);
+					radioBtnStructure.setSelected(false);
+					radioBtnAll.setSelected(false);
+
+				}
+				else 
+				{
+					GraphPanelSmall();
+				}
+			}
+		});
+	
+		// Radio button for controlling view of the data structure
+		radioBtnStructure.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if(radioBtnStructure.isSelected() == true)
+				{
+					dataStructPanel.setVisible(true);
+					pseudoCodePanel.setVisible(false);
+					pseudoCodeTextPane.setVisible(false);
+					gridPanel.setVisible(false);
+					grid.setVisible(false);
+					graphPanel.setVisible(false);
+					dataStructPanel.setBounds(10, 85, frame.getWidth()-35, frame.getHeight()-135);
+					radioBtnPseudoCode.setSelected(false);
+					radioBtnGraph.setSelected(false);
+					radioBtnGrid.setSelected(false);
+					radioBtnAll.setSelected(false);
+
+				}
+				else 
+				{
+					StructurePanelSmall();
+				}
+			}
+		});
+		
+		// Radio button to view all visualisations of the search 
+		radioBtnAll.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{	
+				radioBtnPseudoCode.setSelected(false);
+				radioBtnGraph.setSelected(false);
+				radioBtnGrid.setSelected(false);
+				radioBtnStructure.setSelected(false);
+				
+				GridPanelSmall();
+				GraphPanelSmall();
+				PseudoCodePanelSmall();
+				StructurePanelSmall();
+			}
+		});
+		
+//----------------------------------Labelling which type of search is performing at the moment.--------------- 
+		UILabel SearchTypeLbl = new UILabel(searchType, 25, backgroundcolor, primarycolor);
+		//SearchTypeLbl.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 25));
+		GridBagConstraints gbc_SearchTypeLbl = new GridBagConstraints();
+		gbc_SearchTypeLbl.insets = new Insets(0, 0, 0, 0);
+		gbc_SearchTypeLbl.fill = GridBagConstraints.BOTH;
+		gbc_SearchTypeLbl.gridx = 1;
+		gbc_SearchTypeLbl.gridy = 0;
+		toolBarPanel.add(SearchTypeLbl, gbc_SearchTypeLbl);
+
+
+//-----------------------------------Grid Panel----------------------------
+		grid = new GridVisualiser();
+		gridPanel.setBackground(Color.GRAY);
+		gridPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		gridPanel.setBounds(10, 85, 574, 342);
+		gridPanel.setLayout(null);
+		grid.setBounds(100, 10, 320, 320);
+		frame.getContentPane().add(gridPanel);
+		gridPanel.add(grid);
+
+//----------------------------------Pseudocode Panel
+		pseudoCodePanel.setBackground(Color.GRAY);
+		pseudoCodePanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		pseudoCodePanel.setBounds(586, 85, 570, 342);
+		frame.getContentPane().add(pseudoCodePanel);
+		pseudoCodePanel.setLayout(null);
+		
+		scrollPanePseudo.setBounds(10, 11, 550, 320);
+		pseudoCodePanel.add(scrollPanePseudo);
+		DefaultCaret caret = (DefaultCaret)pseudoCodeTextPane.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		
+		pseudoCodeTextPane.setForeground(Color.GREEN);
+		pseudoCodeTextPane.setBackground(Color.WHITE);
+		pseudoCodeTextPane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		pseudoCodeTextPane.setContentType("text/html");
+		pseudoCodeTextPane.setEditable(true);
+		scrollPanePseudo.setViewportView(pseudoCodeTextPane);
+		
+		JScrollPane scrollPaneAlgo = new JScrollPane();
+		scrollPaneAlgo.setBounds(586, 11, 550, 630);
+		pseudoCodePanel.add(scrollPaneAlgo);
+		
+		algorithmTextArea.setFont(new Font("verdana", Font.PLAIN, 14));
+		algorithmTextArea.setForeground(Color.BLACK);
+		algorithmTextArea.setBackground(Color.WHITE);
+		algorithmTextArea.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		algorithmTextArea.setEditable(true);
+		scrollPaneAlgo.setViewportView(algorithmTextArea);
+		
+
+//--------------------------------Data Structure(Stack/Queue) Panel--------------------------
+		dataStructPanel.setDataStruct(struct);
+		dataStructPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		frame.getContentPane().add(dataStructPanel);
+		
+//--------------------------------Graph Panel--------------------------
+		graphPanel = new GraphVisualiser(graphLocal);
+		frame.getContentPane().add(graphPanel);
+		graphPanel.setBounds(10, 430, 574, 342);
+		graphPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		graphPanel.setVisible(true);
+		Platform.runLater(new Runnable() { 
+            @Override
+            public void run() {
+        		graphPanel.initialise();		
+            }
+        });
+		
+		GridPanelSmall();
+		GraphPanelSmall();
+		PseudoCodePanelSmall();
+		StructurePanelSmall();
+		
+	}
+	
+	// Set up the layout of the radio buttons
+	private static void RadioButtonSetUp(JRadioButton radioButton, JPanel panel, int x, int y)
+	{
+		radioButton.setSelected(false);
+		radioButton.setBackground(Color.LIGHT_GRAY);
+		radioButton.setForeground(Color.DARK_GRAY);
+
+		GridBagConstraints gbc_radioBtn = new GridBagConstraints();
+		gbc_radioBtn.insets = new Insets(0, 0, 5, 5);
+		gbc_radioBtn.fill = GridBagConstraints.BOTH;
+		gbc_radioBtn.gridx = x;
+		gbc_radioBtn.gridy = y;
+		panel.add(radioButton, gbc_radioBtn);
+	}
+	
+	/** 
+	 * Set the grid Panel to the smaller size
+	 */
+	private static void GridPanelSmall()
+	{
+		gridPanel.setBounds(10, 85, 574, 342);
+		grid.setBounds(100, 10, 320, 320);
+		gridPanel.setVisible(true);
+		grid.setVisible(true);
+		pseudoCodePanel.setVisible(true);
+		pseudoCodeTextPane.setVisible(true);
+		graphPanel.setVisible(true);
+		dataStructPanel.setVisible(true);	
+	}
+	
+	/**
+	 * Set the Graph panel to the smaller size
+	 */
+	private static void GraphPanelSmall()
+	{
+		graphPanel.setBounds(10, 430, 574, 342);
+		gridPanel.setVisible(true);
+		grid.setVisible(true);
+		pseudoCodePanel.setVisible(true);
+		pseudoCodeTextPane.setVisible(true);
+		dataStructPanel.setVisible(true);
+	}
+	
+	/**
+	 * Set the Pseudo Code panel to the smaller size
+	 */
+	private static void PseudoCodePanelSmall()
+	{
+		scrollPanePseudo.setBounds(10, 11, 550, 320);
+		pseudoCodePanel.setBounds(586, 85, 570, 342);
+		gridPanel.setVisible(true);
+		grid.setVisible(true);
+		pseudoCodePanel.setVisible(true);
+		pseudoCodeTextPane.setVisible(true);
+		graphPanel.setVisible(true);
+		dataStructPanel.setVisible(true);
+	}
+	
+	/**
+	 * Set dataStructure panel to the smaller size
+	 */
+	private static void StructurePanelSmall()
+	{
+		dataStructPanel.setBounds(586, 430, 570, 342);
+		gridPanel.setVisible(true);
+		grid.setVisible(true);
+		pseudoCodePanel.setVisible(true);
+		pseudoCodeTextPane.setVisible(true);
+		graphPanel.setVisible(true);
+		dataStructPanel.setVisible(true);
+	}
+	
+	/**
+	 * Refresh the UI so that the visualisation are set back to their default, ready
+	 * to visualise a new algorithm.
+	 */
+	public void refresh()
+	{
+		grid.nodeSquares.clear();
+		grid.nonTraversable.clear();
+		gridPanel.removeAll();
+		pseudoCodeTextPane.setText("");
+		algorithmTextArea.setText("");
+		dataStructPanel = new DataStructVis(struct);
+		GridMaker.searchType = "Depth First Search";
+	}
+	
+	/**
+	 * Get pseudocode method
+	 * @return pseudocode pane 
+	 */
+	public static JTextPane getPseudoText()
+	{
+		return pseudoCodeTextPane;
+	}
+	
+	/**
+	 * Get pseudocode method
+	 * @return pseudocode text visualisation 
+	 */
+	public static JTextArea getAlgoText()
+	{
+		return algorithmTextArea;
+	}
+	
+	/**
+	 * Get panel width method
+	 * @return width of the panel
+	 */
+	public static int getPanelWidth()
+	{
+		return gridPanel.getWidth();
+	}
+	
+	/**
+	 * Get panel height method
+	 * @return height of the panel
+	 */
+	public static int getPanelHeight()
+	{
+		return gridPanel.getWidth();
+	}
+	
+	/**
+	 * Get data structure panel method
+	 * @return data structure panel
+	 */
+	public static DataStructVis getDataStructPanel(){
+		return dataStructPanel;
+	}
+	
+	/**
+	 * Get grid method
+	 * @return the Grid visualisation
+	 */
+	public static GridVisualiser getGrid()
+	{
+		return grid;
+	}
+}

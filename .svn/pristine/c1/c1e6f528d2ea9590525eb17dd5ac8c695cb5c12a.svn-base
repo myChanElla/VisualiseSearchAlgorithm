@@ -1,0 +1,46 @@
+import java.util.*;
+
+public class DFS 
+{
+	public Stack<Node> frontier = new Stack<Node>();
+	public Set<Node> visited =  new HashSet<Node>();
+	
+	/**
+	 * @param start node for search
+	 * @param goal node to find
+	 * @return goal node if found
+	 */
+	public Node dfs (Node start, Node goal) 
+	{
+		frontier.push(start);
+		System.out.println("STACK:");
+		for(Node n : frontier){
+			System.out.println(n.getCoord().getX() + ", " + n.getCoord().getY());
+		}
+		System.out.println("END OF STACK:");
+		
+        while(!frontier.empty()) 
+        {
+			Node x = frontier.pop();
+			if(!visited.contains(x) && x.getOpen() == true) 
+			{
+				System.out.println("CHOOSE NODE: " +x.getCoord().getX() + ", " + x.getCoord().getY());
+				if (x == goal) 
+				{
+					return x;
+				}
+				visited.add(x);
+				//change node colour
+				//add code to allow method to pause to control speed of search based on user input
+				//System.out.println("Node: " + x);
+				frontier.addAll(x.getChildren());
+				System.out.println("STACK:");
+				for(Node n : frontier){
+					System.out.println(n.getCoord().getX() + ", " + n.getCoord().getY());
+				}
+				System.out.println("END OF STACK:");
+			}
+		}
+		return null; //goal node not found
+	}
+}

@@ -1,0 +1,161 @@
+package search_algorithms;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import javafx.application.Platform;
+import javafx.scene.paint.Color;
+import structures_dataTypes.Node;
+import uielements.VisualisationUI;
+import visualisation.datastructure.DataStructHelper;
+import visualisation.grid.GridVisualiser;
+import visualisation.pseudocode.PseudoCodeGen;
+import visualisation.pseudocode.PseudoCodeStrings;
+
+/**
+ * 
+ * @author Matt Dean, creation of the algorithm
+ * @author Michael Platts, Debugging and addition of lines for sleeping and calls to the pseudo code and grid
+ * The A* search algorithm 
+ */
+public class Astar 
+{
+	PseudoCodeGen pseudoGen = new PseudoCodeGen(); // Generator for strings displayed in the pseudoCode text area 
+	PseudoCodeStrings pseudoStrings = new PseudoCodeStrings(); // The strings that will be displayed as pseudo code
+	private int speed = 1000; // The time the algorithm will sleep for between each step to control the speed
+	public GridVisualiser grid = VisualisationUI.getGrid(); // The grid visualisation 
+	DataStructHelper dataStructHelper = new DataStructHelper(); // The data structure visualisation
+
+	public Astar(){
+	}
+	
+	/**
+	 * Method for carrying out A* search
+	 * @param start, the root node
+	 * @param goal, the target node
+	 **/
+	public Node astar (Node start, Node goal) 
+	{
+		try
+		{
+			//set start and goal node colours in javafx thread
+			Platform.runLater(new Runnable() { 
+	            @Override
+	            public void run() {
+	            	start.setColor(Color.GREEN);
+	            }
+	        });
+			
+			pseudoGen.addPseudoText("Starting A* Search ...\n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			pseudoGen.addPseudoText("Creating PriorityQueue&lt;Node&gt; frontier \n");
+			PriorityQueue<Node> frontier = new PriorityQueue<Node>();
+			pseudoGen.addPseudoText("Creating HashSet&lt;Node&gt; visited \n");
+			Set<Node> visited = new HashSet<Node>();
+			pseudoGen.addPseudoText("Creating LinkedHashMap&lt;Node&gt; distmap \n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			Map<Node, Double> distmap = new LinkedHashMap<Node, Double>();
+			TimeUnit.MILLISECONDS.sleep(speed);
+	
+			start.genHValue(goal);
+			frontier.add(start);
+			pseudoGen.addPseudoText("<font color=\"green\">" +pseudoStrings.addNode + start.toString() + "\n</font>");
+			dataStructHelper.setNodesFromPriorityQueue(frontier);
+			TimeUnit.MILLISECONDS.sleep(speed);
+			distmap.put(start, 0.0);
+	
+			pseudoGen.addPseudoText(pseudoStrings.whileLoop);
+			TimeUnit.MILLISECONDS.sleep(speed);
+	        while(!frontier.isEmpty()) 
+	        {
+	        	// Check the highest priority node
+				Node x = frontier.poll();
+				if(x != start && x != goal && x.getOpen())
+				{
+					//Change node colour in the grid visualisation 
+					grid.changeColour(x.coord);
+				}
+				pseudoGen.addPseudoText("<font color=\"red\">" +pseudoStrings.pollNode + x.toString() + "\n</font>");
+				dataStructHelper.setNodesFromPriorityQueue(frontier);
+				TimeUnit.MILLISECONDS.sleep(speed);
+				// Check the node hasn't already been visited and isn't blocked in the graph.
+				if(!visited.contains(x) && x.getOpen())
+				{
+					if (x == goal) 
+					{
+						pseudoGen.addPseudoText("<font color=\"green\">" +x.toString() + pseudoStrings.doesEqual + "}" + "\n</font>");
+						pseudoGen.addPseudoText("<font color=\"green\">" + pseudoStrings.completed + "</font>");
+						Platform.runLater(new Runnable() { 
+				            @Override
+				            public void run() {
+				    			goal.setColor(Color.RED);	
+				            }
+				        });
+						return x;
+					}
+					else
+					{
+						visited.add(x);
+						if (x != start){
+							//set node colour in jfx thread
+							Platform.runLater(new Runnable() { 
+					            @Override
+					            public void run() {
+					            	x.setColor(Color.ORANGE);
+					            }
+					        });
+						}
+						pseudoGen.addPseudoText(pseudoStrings.addVisited + x.toString() + "\n");
+						TimeUnit.MILLISECONDS.sleep(speed);
+						ArrayList<Node> children = new ArrayList<Node>();
+						pseudoGen.addPseudoText("<font color=\"green\">" +pseudoStrings.addChildren + x.toString() + "\n</font>");
+						TimeUnit.MILLISECONDS.sleep(speed);
+						children.addAll(x.getChildren());
+						//Traverse through the children of the current node and generate there heuristic value to find priority node
+						for(Node child : children)
+						{
+							pseudoGen.addPseudoText(pseudoStrings.genH + child.toString() + "\n");
+							TimeUnit.MILLISECONDS.sleep(speed);
+							child.genHValue(goal);
+							Platform.runLater(new Runnable() { 
+					            @Override
+					            public void run() {
+					            	child.setSearchParent(x);
+					            }
+					        });
+						}
+						Set<Node> c = x.getChildren();
+						frontier.addAll(c);
+						dataStructHelper.setNodesFromPriorityQueue(frontier);
+						Thread.sleep(200);
+					}
+				}
+				else{
+					if(visited.contains(x))
+						pseudoGen.addPseudoText("Node " + x.toString() + pseudoStrings.alreadyVisited + "\n");
+					else
+						pseudoGen.addPseudoText("Node " + x.toString() + pseudoStrings.notTraversable + "\n");
+				}
+	        }
+	        pseudoGen.addPseudoText("<font color=\"red\">" +pseudoStrings.failed + "</font>");
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		return null; //goal node not found
+	}
+	
+	/**
+	 * Sets the time the algorithm should wait for to adjust the speed
+	 * @param s, the new speed value
+	 */
+	public void setSpeed(int s)
+	{
+		speed = s;
+	}
+}

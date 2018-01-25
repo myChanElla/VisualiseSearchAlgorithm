@@ -1,0 +1,174 @@
+package testing;
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+import structures_dataTypes.Coordinate;
+import structures_dataTypes.GraphGenerator;
+import structures_dataTypes.Node;
+
+import org.junit.Before;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
+/**
+ * 
+ * @author Chrystal
+ * A* JUnit Test Case for Astar Class
+ */
+public class AstarTest {
+	
+	private int[] startx; // Array of Start x Coordinates
+	private int[] starty; // Array of Start y Coordinates 
+	private int[] goalx;  // Array of Goal  x Coordinates
+	private int[] goaly;  // Array of Goal  y Coordinates 
+	private Coordinate[] blocks; // Array of Block Coordinates
+	private Node aStarTest; // Used to call the astar method in the Astar Class
+	private Node goalNode;  // Goal node is the node we are searching for
+	private GraphGenerator gen; // A Graph Generator 
+	
+	/**
+	 * @Before - Carried out Before the tests
+	 * Initialise all global Variables 
+	 * Input Data into the array for each test to be carried out 
+	 */
+
+	@Before 
+	public void setup()
+	{	//Test	-		    1  2  3  4  5  6  7 
+		startx = new int[] {1, 3, 4, 6, 0, 8, 1};
+		starty = new int[] {3, 6, 6, 8, 9, 3, 6};
+		goalx =  new int[] {4, 3, 1, 2, 4, 9, 2};
+	    goaly =  new int[] {7, 6, 7, 1, 1, 0, 3};
+	    
+		blocks = new Coordinate[] {				  //Test
+							new Coordinate (1,1), //1
+							new Coordinate (2,3), //2
+							new Coordinate (4,6), //3
+							new Coordinate (2,1), //4
+							new Coordinate (7,1), //5
+							new Coordinate (3,5), //6
+							new Coordinate (9,9), //7
+							};
+			
+		aStarTest = null;
+		goalNode = null;
+	    gen = new GraphGenerator();
+			
+	}
+	
+	/**
+	 * 
+	 * @param i - The index in the arrays which the tests are calling - For Example Index 0 will be used to get startx,starty,goalx,goaly and blocks at index i for this test
+	 * @return Returns the result of the aStarTest which is an Astar Search, the goal node that is found
+	 * testCode - uses the i variable to assign different variables to the aStar Search each time a different test is run
+	 */
+	public Node testCode(int i)
+	{
+		ArrayList<Node> block = new ArrayList<Node>();
+		Node n= new Node(blocks[i], false);
+		block.add(n);
+	
+		LinkedHashMap<Integer, Node> graph = gen.genGraph(10, 10, block);
+		
+		Coordinate start = new Coordinate(startx[i],starty[i]);
+		Coordinate goal = new Coordinate (goalx[i],goaly[i]);
+		
+		Node startNode = graph.get(start.genHash());
+		goalNode = graph.get(goal.genHash());
+		
+		AstarAlgorithms aStarSearch = new AstarAlgorithms();
+		aStarTest = aStarSearch.astar(startNode, goalNode);
+		
+		return aStarTest;
+	}
+	/**
+	 * Test 1
+	 * i = index 0
+	 * Inputs - Start, Goal and Block Coordinates each with different values 
+	 * Test - GoalNode = Node Returned by Astar Search
+	 * Expected OutPut - Pass Test as goalNode is Equal to the Node that is returned from the AStar Search
+	 * OutPut - Test Passes
+	 */
+	@Test
+	public void test() {
+		System.out.println(testCode(0) + " " + goalNode.toString());
+		assertTrue(testCode(0) == goalNode); 
+	}
+	/**
+	 * Test 2
+	 * i = index 1
+	 * Inputs - Start and Goal Coordinates are Equal, Block Node has a Different Coordinate 
+	 * Test - GoalNode = Node Returned by Astar Search
+	 * Expected OutPut - Pass Test - Goal Node is found as Start is the Goal
+	 * OutPut - Test Passes
+	 */
+	
+	@Test
+	public void test2(){
+		assertTrue(testCode(1) == goalNode); //GoalNode = StartNode
+	}
+	
+	/**
+	 * Test 3
+	 * i = index 2
+	 * Inputs - Start and Block Coordinates are Equal, Goal Node has a Different Coordinate 
+	 * Test - GoalNode != Node Returned by Astar Search
+	 * Expected OutPut - Pass Test - Goal Node is Not found as it is not possible to have the same start and block node
+	 * OutPut - Test Passes
+	 */
+	@Test
+	public void test3(){
+		assertFalse(testCode(2) == goalNode); //StartNode same as Block
+	}
+	/**
+	 * Test 4
+	 * i = index 3
+	 * Inputs - Goal and Block Coordinates are Equal, Start Node has a Different Coordinate
+	 * Test - GoalNode != Node Returned by Astar Search 
+	 * Expected OutPut - Pass Test - Goal Node is Not found as it is not possible to have the same goal and block node
+	 * OutPut - Test Passes
+	 */
+	@Test
+	public void test4(){
+		assertFalse(testCode(3) == goalNode); //GoalNode same as Block
+	}
+	/**
+	 * Test 5
+	 * i = index 4
+	 * Inputs - Start Node Coordinate at Grid Boundaries 
+	 * Test - GoalNode = Node Returned by Astar Search 
+	 * Expected OutPut - Pass Test - Should be able to start a search inside the boundaries 
+	 * OutPut - Test Passes
+	 */
+	@Test 
+	public void test5()
+	{
+		assertTrue(testCode(4) == goalNode);// Start Node x and y values at grid boundaries boarder
+	}
+	/**
+	 * Test 6
+	 * i = index 5
+	 * Inputs - Goal Node Coordinate at Grid Boundaries 
+	 * Test - GoalNode = Node Returned by Astar Search 
+	 * Expected OutPut - Pass Test - Goal should be found at the boundaires  
+	 * OutPut - Test Passes
+	 */
+	@Test 
+	public void test6()
+	{
+		assertTrue(testCode(5) == goalNode);// Goal Node x and y values at grid boundaries boarder
+	}
+	/**
+	 * Test 7
+	 * i = index 6
+	 * Inputs - Block Node Coordinate at Grid Boundaries 
+	 * Test - GoalNode = Node Returned by Astar Search 
+	 * Expected OutPut - Pass Test - Block node should be able to be placed at the boundries   
+	 * OutPut - Test Passes
+	 */
+	@Test 
+	public void test7()
+	{
+		assertTrue(testCode(6) == goalNode);// Block Node x and y values at grid boundaries boarder
+	}
+}

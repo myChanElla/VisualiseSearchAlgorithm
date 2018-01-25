@@ -1,0 +1,119 @@
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+public class DataStructVis extends JPanel {
+
+	private static int BUTTON_LOCATION_X;  // location x 
+	private static int BUTTON_LOCATION_Y;   // location y 
+	private static final int BUTTON_SIZE_X = 100;   
+	private static final int BUTTON_SIZE_Y = 25;
+	public ArrayList<JButton> buttons = new ArrayList<>();
+	public int counter;
+	public Struct struct;
+
+	public DataStructVis(Struct struct)
+	{
+		super();
+		this.counter = 0;
+		this.struct = struct;
+		this.setBounds(544, 430, 530, 342);
+		System.out.printf("%d\n",this.getWidth());
+		BUTTON_LOCATION_X = (this.getWidth()/2) - (BUTTON_SIZE_X /2);
+		BUTTON_LOCATION_Y = 250;
+		this.setBackground(Color.GRAY);
+		setLayout(null);
+		JLabel dataStructLabel = new JLabel();
+		dataStructLabel.setBounds(10, 10, 100, 30);
+		dataStructLabel.setText("Stack");
+		dataStructLabel.setFont(new Font("Serif", Font.BOLD, 18));
+		this.add(dataStructLabel);
+	}
+
+	public void createNode(String label){
+		JButton button = new JButton(label);
+		button.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				System.out.println("remove");
+				// display/center the dialog when the button is pressed
+				removeNode(label);
+			}
+		});
+		button.setBounds(BUTTON_LOCATION_X, BUTTON_LOCATION_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y);
+		this.buttons.add(button);
+		counter++;
+		BUTTON_LOCATION_Y -= 25;
+	}
+
+	public void removeNode(String label){
+		int index = -1;
+		for(JButton b : this.buttons){
+			if(b.getText().equals(label)){
+				System.out.printf("TEXT:%s\nLABEL:%s\n",b.getText(),label);
+				remove(b);
+				counter--;
+				index = this.buttons.indexOf(b);
+			}
+			for(JButton bt : this.buttons){
+				if(this.buttons.indexOf(bt) > index && index!= -1){
+					b.setLocation(b.getX(), b.getY() + 7);
+				}
+			}
+		}
+		this.revalidate();
+		this.repaint();	
+	}
+
+	public void addNodes(){
+		switch(this.struct){
+		case STACK:
+			System.out.println("stack");
+			for(JButton b : this.buttons){
+				this.add(b);
+				b.setVisible(true);
+			}
+			break;
+
+		case QUEUE:
+			System.out.println("queue");
+			break;
+
+		case PRIORITY_QUEUE:
+			System.out.println("p queue");
+			break;
+		}
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paintComponent(g);
+		switch(this.struct){
+		case STACK:
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(Color.WHITE);
+			g2.setStroke(new BasicStroke(5));
+			g2.drawLine(BUTTON_LOCATION_X - 15, 30, BUTTON_LOCATION_X - 15, this.getHeight()+30);
+			g2.drawLine(BUTTON_LOCATION_X + BUTTON_SIZE_X + 15, 30, BUTTON_LOCATION_X + BUTTON_SIZE_X + 15, this.getHeight()+30);
+			break;
+		case QUEUE:
+			break;
+		case PRIORITY_QUEUE:
+			break;
+		default:
+			break;
+		}
+	}
+}

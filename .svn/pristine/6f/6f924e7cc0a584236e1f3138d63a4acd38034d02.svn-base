@@ -1,0 +1,60 @@
+package visualisation.graph;
+import java.util.LinkedHashMap;
+import java.util.Observable;
+import java.util.Observer;
+
+import basics.Node;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.paint.Color;
+
+public class ColorListener implements Observer {
+
+	public JFXPanel panel;
+	private Node node;
+	private FxGraph fxgraph;
+
+	ColorListener(LinkedHashMap<Integer, Node> graph, JFXPanel panel, Node node, FxGraph fxgraph){
+		this.panel = panel;
+		this.node = node;
+		this.fxgraph = fxgraph;
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		//create fxnode + set colour
+		Node parent = node.getSearchParent();
+		int level;
+		int offset = 0;
+		if(parent != null){
+			System.out.println(node + " parent: " + parent);
+			level = parent.getLevel()+1;
+			offset = parent.searchOffset;
+			int child = parent.searchChildren;
+			parent.searchChildren++;
+			System.out.println(child);
+			switch(child){
+				case 0: offset = offset-2; break;
+				case 1: offset = offset-1; break;
+				case 2: offset = offset+1; break;
+				case 3: offset = offset+2; break;
+			}
+			System.out.println(offset);
+			node.searchOffset = offset;
+			
+		}
+		else{
+			level = 1;
+		}
+		node.setLevel(level);
+		double circleCoordX = ((panel.getWidth())/2) + (40*offset); 
+		double circleCoordY = 50*level; 
+		if (parent != null){
+			double parentCoordX = ((panel.getWidth())/2) + (40*parent.searchOffset);
+			double parentCoordY = 50* parent.getLevel();
+			FxEdge edge = new FxEdge(parentCoordX, parentCoordY, circleCoordX, circleCoordY, fxgraph);
+		}
+		FxNode fxnode = new FxNode(node, fxgraph, level, offset);
+		fxnode.setColor((Color) arg1);
+		
+	}
+}

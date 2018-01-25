@@ -1,0 +1,157 @@
+package search_algs;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import basics.Node;
+import basics.Struct;
+import javafx.application.Platform;
+import javafx.scene.paint.Color;
+import visualisation.VisualisationUI;
+import visualisation.datastructure.DataStructHelper;
+import visualisation.grid.GridVisualiser;
+import visualisation.pseudocode.PseudoCodeGen;
+import visualisation.pseudocode.PseudoCodeStrings;
+
+public class DFS 
+{
+	private Map<Node, Node> pathmap;
+	private boolean foundnode = false;
+	PseudoCodeGen pseudoGen = new PseudoCodeGen();
+	PseudoCodeStrings pseudoStrings = new PseudoCodeStrings();
+	public int speed = 1000;
+	DataStructHelper dataStructHelper = new DataStructHelper();
+	public GridVisualiser grid = VisualisationUI.getGrid();
+	
+	public DFS(){
+		this.pathmap = new LinkedHashMap<Node,Node>();
+	}
+	
+	/**
+	 * @param start node for search
+	 * @param goal node to find
+	 * @return goal node if found
+	 */
+	public Node dfs (Node start, Node goal) 
+	{
+		try
+		{
+				
+			//set start and goal node colors in javafx thread
+			Platform.runLater(new Runnable() { 
+	            @Override
+	            public void run() {
+	            	start.setColor(Color.GREEN);
+	            	start.setLevel(1);
+	            }
+	        });
+			
+			dataStructHelper.createNode(start);
+			pseudoGen.addPseudoText("Starting Depth First Search ... \n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			Stack<Node> frontier = new Stack<Node>();
+			pseudoGen.addPseudoText("Creating Stack<Node> frontier \n");
+			Set<Node> visited =  new HashSet<Node>();
+			pseudoGen.addPseudoText("Creating HashSet<Node> visited \n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+		
+			frontier.push(start);
+			pathmap.put(start, start);
+			pseudoGen.addPseudoText(pseudoStrings.pushNode + start.toString() + "\n");
+	
+			TimeUnit.MILLISECONDS.sleep(speed);
+			pseudoGen.addPseudoText(pseudoStrings.whileLoop);
+
+	        while(!frontier.empty()) 
+	        {
+				Node x = frontier.pop();
+				if(x != start && x != goal && x.getOpen())
+				{
+					grid.changeColour(x.coord);
+					
+					//set node color in jfx thread
+					Platform.runLater(new Runnable() { 
+			            @Override
+			            public void run() {
+			            	x.setColor(Color.ORANGE);
+			            }
+			        });
+				}
+				dataStructHelper.removeNode(x);
+				pseudoGen.addPseudoText(pseudoStrings.popNode + x.toString() + "\n");
+				TimeUnit.MILLISECONDS.sleep(speed);
+				pseudoGen.addPseudoText(pseudoStrings.checkNode + x.toString() + "\n");
+				if(!visited.contains(x) && x.getOpen() == true) 
+				{
+					if (x == goal) 
+					{	
+						TimeUnit.MILLISECONDS.sleep(speed);
+						pseudoGen.addPseudoText(x.toString() + pseudoStrings.doesEqual + "}" + "\n");
+						pseudoGen.addPseudoText(pseudoStrings.completed);
+						foundnode = true;
+						Platform.runLater(new Runnable() { 
+				            @Override
+				            public void run() {
+				    			goal.setColor(Color.RED);	
+				            }
+				        });
+						return x;
+					}
+					pseudoGen.addPseudoText(x.toString() + pseudoStrings.notEqual + "\n");
+					TimeUnit.MILLISECONDS.sleep(speed);
+					pseudoGen.addPseudoText(pseudoStrings.addVisited + x.toString() + "\n");
+					visited.add(x);
+					TimeUnit.MILLISECONDS.sleep(speed);
+					pseudoGen.addPseudoText(pseudoStrings.addChildren + x.toString() + "\n");
+					Set<Node> children = x.getChildren();
+					//dataStructHelper.addAll(children);
+					//add nodes to path
+					Iterator<Node> it = children.iterator();
+					while(it.hasNext()){
+						Node next = it.next();
+						if(!visited.contains(next)){
+							pathmap.put(next,x);
+							frontier.add(next);
+							dataStructHelper.createNode(next);
+							System.out.println("setting parent");
+							Platform.runLater(new Runnable() { 
+					            @Override
+					            public void run() {
+					            	next.setSearchParent(x);
+					            }
+					        });
+						}
+					}
+					TimeUnit.MILLISECONDS.sleep(speed);
+				}
+			}
+	        pseudoGen.addPseudoText(pseudoStrings.failed + "}");
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		return null; //goal node not found
+	}
+	
+	public ArrayList<Node> getPath(Node start, Node goal){
+		ArrayList<Node> list = new ArrayList<Node>();
+		if(!foundnode){ 
+			System.out.print("goal node not reachable");
+			list.add(start);
+			return list;
+		}
+		Node z = goal;
+		list.add(z);
+		while (!(z.equals(start))) {
+            z = pathmap.get(z);
+            list.add(z);
+        }
+		Collections.reverse(list);
+        return list;
+	}
+	
+	public void setSpeed(int s)
+	{
+		speed = s;
+	}
+}

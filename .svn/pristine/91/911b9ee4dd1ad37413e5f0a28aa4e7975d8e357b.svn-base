@@ -1,0 +1,53 @@
+/**
+	Class for creating a graph component that can be added to a JPanel
+ */
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.LinkedHashMap;
+import java.util.Set;
+
+import javax.swing.JComponent;
+
+@SuppressWarnings("serial")
+public class GraphComponent extends JComponent {
+	NodeCircle currNode;
+	NodeCircle allNodes[];
+	
+	/**
+	Construct component from graph
+	@param graph, the graph
+	 */
+	public GraphComponent (LinkedHashMap<Integer, Node> graph){		
+		super();
+		allNodes = new NodeCircle[graph.size()];
+		Set<Integer> keys = graph.keySet();
+		int j = 0;
+		for (Integer i : keys){
+			//System.out.println(graph.get(i));
+			currNode = new NodeCircle(graph.get(i));
+			allNodes[j] = currNode;	
+			j++;
+		}
+	}
+	/**
+	Draw the nodes
+	@param g The graphic object to draw on
+	 */
+	public void paintComponent(Graphics g)
+	{
+		Graphics2D g2 = (Graphics2D)g;	//tells the compiler this actually is a 2D object
+				//Traverse array and draw every object
+		for (int i = 0; i < allNodes.length; i++){
+			allNodes[i].draw(g2);	
+			System.out.println("Printing a node");
+		} 
+	}
+	
+	
+	//Pretty graphics
+			//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+			//		RenderingHints.VALUE_ANTIALIAS_ON);
+			
+
+}

@@ -1,0 +1,4 @@
+package basics;
+public enum Struct {
+	    STACK, QUEUE, PRIORITY_QUEUE; 	
+}

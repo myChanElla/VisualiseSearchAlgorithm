@@ -1,0 +1,105 @@
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+
+public class HelpUI {
+
+	private JFrame frame;
+
+	/**
+	 * Launch the application.
+	 * @return 
+	 */
+	public static void loadHelp(){
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					HelpUI window = new HelpUI();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public HelpUI() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 936, 601);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		JButton btnNext = new JButton("Next ->");
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnNext.setBounds(667, 505, 102, 32);
+		frame.getContentPane().add(btnNext);
+		
+		JButton btnBack = new JButton("<- Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnBack.setBounds(544, 505, 102, 32);
+		frame.getContentPane().add(btnBack);
+		
+		JButton btnClose = new JButton("Close");
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnClose.setBounds(790, 505, 102, 32);
+		frame.getContentPane().add(btnClose);
+		
+		JLabel lblHelpImage = new JLabel("Help Image");
+		lblHelpImage.setBounds(79, 49, 774, 410);
+		frame.getContentPane().add(lblHelpImage);
+		
+		
+		
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				frame.setVisible(false);
+				MainMenuUI.main(null);
+		
+				}
+			});
+		
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				lblHelpImage.setText("Next");
+				
+				}
+			});
+		
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				lblHelpImage.setText("Back");
+		
+				}
+			});
+		
+		
+		
+	}
+
+}

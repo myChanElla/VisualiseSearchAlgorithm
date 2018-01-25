@@ -1,0 +1,102 @@
+package visualisation.graph;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Observable;
+import java.util.Observer;
+
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import structures_dataTypes.Node;
+
+public class ColorListener implements Observer {
+
+	private Node node;
+	private FxGraph fxgraph;
+	private ArrayList<FxNode> fxnodes;
+
+	ColorListener(LinkedHashMap<Integer, Node> graph, Node node, FxGraph fxgraph, ArrayList<FxNode> fxnodes){
+		this.node = node;
+		this.fxgraph = fxgraph;
+		this.fxnodes = fxnodes;
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+
+		Node parent = node.getSearchParent();
+		FxNode fxparent = null;
+		
+		//setup standard values for start node (overwritten unless parent=null)
+		int level = 1;
+		int offset = 0;
+		double circleCoordX = 265;
+		double circleCoordY = 50 * level;
+		Line line = null;
+		
+		//if this is not the start node...
+		if(parent != null){
+			
+			fxparent = parent.getFxNode();
+			
+			//increment the height of the tree
+			level = fxparent.getLevel()+1;
+			
+			//add another child to the parent node
+			int child = fxparent.getChildren();
+			fxparent.setChildren(child+1);
+		
+			double parentCoordX = fxparent.getXCoord();
+			
+			//move nodes left or right to make space and ensure they don't overlap
+			if (parentCoordX < (fxnodes.get(0).getXCoord())){
+				//if the parent is to the left of root, we want to find nodes left of the parent and shift them left a little more to make room
+				for(FxNode n : fxnodes){
+					if (n.getXCoord() < parentCoordX){
+						n.shiftLeft();
+					}
+					n.updateLine();
+				}
+			}else if(parentCoordX > (fxnodes.get(0).getXCoord())){
+				//if the parent is right of root, the opposite applies (find nodes right of parent and shift them right)
+				for(FxNode n : fxnodes){
+					if (n.getXCoord() > parentCoordX){
+						n.shiftRight();
+					}
+					n.updateLine();
+				}
+			}
+			
+			
+			//offset the child node underneath the parent differently depending on the number of children already displayed
+			switch(child){
+				case 0: offset = -1; break;
+				case 1: offset = 1; break;
+				case 2: offset = -4; break;
+				case 3: offset = +4; break;
+			}
+			circleCoordX = (parentCoordX + (25*offset)); 
+			
+			//basic y coordinate for each level of the search tree
+			circleCoordY = 50*level;
+			
+			
+			//create edges
+			FxEdge edge = new FxEdge(fxparent, circleCoordX, circleCoordY, fxgraph);
+			line = edge.getLine();
+		}
+
+		FxNode fxnode = new FxNode(node, fxgraph, circleCoordX, circleCoordY);
+		
+		//add data to fxnode
+		fxnode.setColor((Color) arg1);
+		fxnode.setLevel(level);
+		fxnode.setLine(line);
+		fxnode.setFxParent(fxparent);
+		
+		node.setFxNode(fxnode);
+		
+		//add this node to the list of displayed nodes
+		fxnodes.add(fxnode);
+		
+	}
+}

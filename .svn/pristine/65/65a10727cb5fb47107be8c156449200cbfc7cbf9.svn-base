@@ -1,0 +1,591 @@
+import java.awt.Color;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+
+import java.awt.GridLayout;
+import javax.swing.JComboBox;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Set;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JButton;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+
+public class GridMaker {
+
+	private JFrame frame;
+	private JButton b;
+	
+	
+	public boolean startButton;
+	public boolean goalButton;
+	public boolean blockButton;
+	
+	public static int chosenX;
+	public static int chosenY;
+	public static Node start;
+	public static Node end;
+	public static ArrayList<Node> block = new ArrayList<Node>();
+	public static String searchType = "Depth First Search";
+	
+	static ArrayList<JButton> gridButton = new ArrayList<JButton>(); //list of Buttons
+	public static ArrayList<Coordinate> gridCoord = new ArrayList<Coordinate>(); //list of Coordinates
+	public static LinkedHashMap<String,Coordinate> linkage = new LinkedHashMap<String, Coordinate>(); //links between button Name(string coordinate) and coordinate
+	public static Set<Node> blockSet = new HashSet<>();
+	
+	
+	//Boolean flags for which search is selected by the user
+	public boolean isDFS = false;
+	public boolean isBFS = false;
+	public boolean isAstar = false;
+	
+
+	/**
+	 * Launch the application.
+	 */
+	public static void openUI()
+	{
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try 
+				{
+					GridMaker window = new GridMaker();
+					window.frame.setVisible(true);
+				} 
+				catch (Exception e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public GridMaker() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.getContentPane().setBackground(Color.DARK_GRAY);
+		frame.setBounds(100, 100, 1028, 628);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		UIManager.put("ScrollBar.thumbHighlight", Color.LIGHT_GRAY);         
+		UIManager.put("ScrollBar.thumbDarkShadow", Color.LIGHT_GRAY);
+		UIManager.put("ScrollBar.highlight", Color.LIGHT_GRAY);
+		UIManager.put("ScrollBar.trackHighlight", Color.LIGHT_GRAY);
+		UIManager.put("ScrollBar.trackHighlight", Color.LIGHT_GRAY);
+		UIManager.put("ComboBox.selectionBackground", Color.LIGHT_GRAY);
+		
+		
+//-------------------------------------Combo Box for selecting size of board-------------------
+		
+		JLabel lblSizeOfBoard = new JLabel("Size of Board: ");
+		lblSizeOfBoard.setForeground(Color.BLACK);
+		lblSizeOfBoard.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 16));
+		lblSizeOfBoard.setBounds(22, 62, 111, 22);
+		frame.getContentPane().add(lblSizeOfBoard);
+		
+		//set items in column drop down table
+		Integer[] m = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}; 
+		
+		//set items in row drop down table
+		Integer[] n = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}; 
+		chosenX = chosenX+5;
+		chosenY = chosenY+5;
+		
+		
+//----------------------------------------Create the board according to user's input---------------		
+		
+		//Create a JPanel for the grid board
+		JPanel mainPanel = new JPanel();
+		mainPanel.setBounds(413, 41, 500, 500);
+		
+		JPanel searchPanel = new JPanel();
+		searchPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		searchPanel.setBackground(Color.GRAY);
+		searchPanel.setBounds(10, 414, 231, 143);
+		frame.getContentPane().add(searchPanel);
+		searchPanel.setLayout(null);
+		
+		
+//--------------------------------------------------ComboBox for choosing search methods---------------------------		
+		
+		JComboBox<String> searchTypeComboBox = new JComboBox<String>();
+		searchTypeComboBox.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 11));
+		searchTypeComboBox.setBackground(Color.WHITE);
+		searchTypeComboBox.setBounds(10, 44, 201, 34);
+		searchPanel.add(searchTypeComboBox);
+		searchTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"Depth First Search", "Breadth First Search", "A* Search"}));
+		
+		
+
+//-----------------------------------------Start to search-----------------------------		
+		
+		JLabel searchTypeLbl = new JLabel("Search type");
+		searchTypeLbl.setForeground(Color.BLACK);
+		searchTypeLbl.setBounds(10, 11, 86, 22);
+		searchPanel.add(searchTypeLbl);
+		searchTypeLbl.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 16));
+		
+		JButton startSearchBtn = new JButton("Start Search");
+		startSearchBtn.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 11));
+		startSearchBtn.setBackground(Color.WHITE);
+		startSearchBtn.setBounds(10, 98, 201, 34);
+		searchPanel.add(startSearchBtn);
+		startSearchBtn.addMouseListener(new MouseAdapter()
+		{
+            public void mouseEntered(MouseEvent evt)
+            {
+            	startSearchBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            	startSearchBtn.setBackground(Color.DARK_GRAY);
+            	startSearchBtn.setForeground(Color.WHITE);
+            }
+            public void mouseExited(MouseEvent evt)
+            {
+            	startSearchBtn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+            	startSearchBtn.setBackground(Color.WHITE);
+            	startSearchBtn.setForeground(Color.DARK_GRAY);
+            }
+            public void mousePressed(MouseEvent evt)
+            {
+            	startSearchBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void mouseReleased(MouseEvent evt)
+            {
+            	startSearchBtn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            }
+		});
+		
+		JPanel gridMakerPanel = new JPanel();
+		gridMakerPanel.setBackground(Color.GRAY);
+		gridMakerPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		gridMakerPanel.setBounds(10, 48, 279, 261);
+		frame.getContentPane().add(gridMakerPanel);
+		gridMakerPanel.setLayout(null);
+		JToggleButton setBlocksBtn = new JToggleButton("Set Blocks");
+		setBlocksBtn.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 11));
+		setBlocksBtn.setBackground(Color.WHITE);
+		setBlocksBtn.setBounds(10, 227, 136, 23);
+		gridMakerPanel.add(setBlocksBtn);
+		setBlocksBtn.addMouseListener(new MouseAdapter()
+		{
+            public void mouseEntered(MouseEvent evt)
+            {
+            	setBlocksBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            	setBlocksBtn.setBackground(Color.DARK_GRAY);
+            	setBlocksBtn.setForeground(Color.WHITE);
+            }
+            public void mouseExited(MouseEvent evt)
+            {
+            	setBlocksBtn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+            	setBlocksBtn.setBackground(Color.WHITE);
+            	setBlocksBtn.setForeground(Color.DARK_GRAY);
+            }
+            public void mousePressed(MouseEvent evt)
+            {
+            	setBlocksBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void mouseReleased(MouseEvent evt)
+            {
+            	setBlocksBtn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            }
+		});
+		
+				
+		//---------------------------------create buttons------------------------
+				
+		JButton selectGoalNodeBtn = new JButton("Select Goal Node");
+		selectGoalNodeBtn.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 11));
+		selectGoalNodeBtn.setBackground(Color.WHITE);
+		selectGoalNodeBtn.setBounds(10, 191, 136, 25);
+		gridMakerPanel.add(selectGoalNodeBtn);
+		selectGoalNodeBtn.addMouseListener(new MouseAdapter()
+		{
+            public void mouseEntered(MouseEvent evt)
+            {
+            	selectGoalNodeBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            	selectGoalNodeBtn.setBackground(Color.DARK_GRAY);
+            	selectGoalNodeBtn.setForeground(Color.WHITE);
+            }
+            public void mouseExited(MouseEvent evt)
+            {
+            	selectGoalNodeBtn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+            	selectGoalNodeBtn.setBackground(Color.WHITE);
+            	selectGoalNodeBtn.setForeground(Color.DARK_GRAY);
+            }
+            public void mousePressed(MouseEvent evt)
+            {
+            	selectGoalNodeBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void mouseReleased(MouseEvent evt)
+            {
+            	selectGoalNodeBtn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            }
+		});
+		
+		JButton selectStartBtn = new JButton("Select Start Node");
+		selectStartBtn.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 11));
+		selectStartBtn.setBackground(Color.WHITE);
+		selectStartBtn.setBounds(10, 155, 136, 25);
+		gridMakerPanel.add(selectStartBtn);
+		selectStartBtn.addMouseListener(new MouseAdapter()
+		{
+            public void mouseEntered(MouseEvent evt)
+            {
+            	selectStartBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            	selectStartBtn.setBackground(Color.DARK_GRAY);
+            	selectStartBtn.setForeground(Color.WHITE);
+            }
+            public void mouseExited(MouseEvent evt)
+            {
+            	selectStartBtn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+            	selectStartBtn.setBackground(Color.WHITE);
+        		selectStartBtn.setForeground(Color.DARK_GRAY);
+            }
+            public void mousePressed(MouseEvent evt)
+            {
+            	selectStartBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void mouseReleased(MouseEvent evt)
+            {
+            	selectStartBtn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            }
+		});
+		
+		JComboBox gridYComboBox = new JComboBox(n);
+		gridYComboBox.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 11));
+		gridYComboBox.setBackground(Color.WHITE);
+		gridYComboBox.setBounds(225, 17, 44, 22);
+		gridMakerPanel.add(gridYComboBox);
+				
+		//label indicating times
+		JLabel lblX = new JLabel("X");
+		lblX.setHorizontalAlignment(SwingConstants.CENTER);
+		lblX.setBounds(197, 23, 18, 16);
+		gridMakerPanel.add(lblX);
+		lblX.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 16));
+		JComboBox gridXComboBx = new JComboBox(m);		
+		gridXComboBx.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 11));
+		gridXComboBx.setBackground(Color.WHITE);
+		gridXComboBx.setBounds(143, 17, 44, 22);
+		gridMakerPanel.add(gridXComboBx);
+				
+		//Create a create grid button to paint the grid buttons onto the JPanel once pressed
+		JButton createGridBtn = new JButton("Create Grid");
+		createGridBtn.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 11));
+		createGridBtn.setBackground(Color.WHITE);
+		createGridBtn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		createGridBtn.setBounds(10, 48, 111, 25);
+		createGridBtn.setRolloverEnabled(true);
+		createGridBtn.setFocusPainted(false);
+		gridMakerPanel.add(createGridBtn);
+		createGridBtn.addMouseListener(new MouseAdapter()
+		{
+            public void mouseEntered(MouseEvent evt)
+            {
+        		createGridBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        		createGridBtn.setBackground(Color.DARK_GRAY);
+        		createGridBtn.setForeground(Color.WHITE);
+            }
+            public void mouseExited(MouseEvent evt)
+            {
+        		createGridBtn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        		createGridBtn.setBackground(Color.WHITE);
+        		createGridBtn.setForeground(Color.DARK_GRAY);
+            }
+            public void mousePressed(MouseEvent evt)
+            {
+        		createGridBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void mouseReleased(MouseEvent evt)
+            {
+        		createGridBtn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            }
+		});
+		createGridBtn.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				mainPanel.removeAll();
+				gridCoord.clear();
+				
+				//set the grid layout of board + assign coordinates to them
+				mainPanel.setLayout(new GridLayout(chosenX, chosenY));
+								
+				for(int m=0; m<chosenX ; m++)
+				{
+					for(int n=0; n<chosenY; n++)
+					{
+						b=new JButton();
+						b.setBackground(Color.WHITE);
+						mainPanel.add(b);
+						b.setActionCommand("("+ m + "," + n + ")"); //assign string coordinate to the button
+						gridButton.add(b);
+						Coordinate element = new Coordinate(m,n); //create list of Coordinates according to size of board
+						gridCoord.add(element);
+					}
+				}
+						
+
+				//-------------------------------------------------assigning action listener to the grid----------------------
+
+				for(int i=0; i<gridButton.size();i++)
+				{
+					gridButton.get(i).addActionListener(new ActionListener()
+							{
+								public void actionPerformed(ActionEvent event)
+								{
+									int index = gridButton.indexOf(event.getSource());
+									if(index>=0)
+									{
+										if(startButton==true)
+										{
+											//make sure it hasn't been chosen before
+											if(start!=null)
+											{
+												for(int i=0; i<gridButton.size();i++)
+												{
+													if(gridButton.get(i).getBackground()==Color.red)
+													{
+														gridButton.get(i).setBackground(Color.white);
+													}
+												}
+												start=null; //set the start node back to null	
+											}			
+											gridButton.get(index).setBackground(Color.red); //set button to red
+														
+											Coordinate a= linkage.get(gridButton.get(index).getActionCommand());//retrieve the grid coordinate
+											System.out.println("startNode selected: ");
+											System.out.println("The coordinate is: "+ a);
+															
+											start=new Node(a, true);//create the start Node.
+														
+											startButton=false;
+											selectGoalNodeBtn.setEnabled(true);
+											setBlocksBtn.setEnabled(true);
+										}
+										else if(goalButton==true)
+										{
+											//make sure it hasn't been chosen before
+											if(end!=null)
+											{
+												for(int i=0; i<gridButton.size();i++)
+												{
+													if(gridButton.get(i).getBackground()==Color.green)
+													gridButton.get(i).setBackground(Color.white);
+												}
+												end=null; //set the end node back to null
+											}
+															
+											gridButton.get(index).setBackground(Color.green);//set button to green
+															
+											Coordinate b= linkage.get(gridButton.get(index).getActionCommand());//retrieve the grid coordinate
+											System.out.println("goalNode selected... ");
+											System.out.println("The coordinate is: "+ b);
+															
+											end=new Node(b, true);//set the goal node
+													
+											goalButton=false;
+											selectStartBtn.setEnabled(true);
+											setBlocksBtn.setEnabled(true);
+										}
+										else if(blockButton==true)
+										{
+											//if selected, allow change of board
+											if(setBlocksBtn.isSelected())
+											{
+												if(gridButton.get(index).getBackground()==Color.black)
+												{
+													gridButton.get(index).setBackground(Color.white);
+												}
+												else
+												{
+													gridButton.get(index).setBackground(Color.black);
+												}			
+												Coordinate c= linkage.get(gridButton.get(index).getActionCommand());//retrieve the grid coordinate
+												Node n= new Node(c, false);
+												block.add(n);
+												System.out.println("I selected a block");
+												System.out.println(gridButton.get(index).getActionCommand());
+											}
+											else
+											{
+												selectStartBtn.setEnabled(true);
+												selectGoalNodeBtn.setEnabled(true);
+												blockButton=false;
+												
+											}
+													
+										}
+										else
+										{
+											System.out.println("What do you want to put here?");
+										}
+									}
+								}
+							});
+						}
+
+						//(means of verifying) try to print out to see if i'm correct
+						System.out.println("Size of Coord arrayLiat: "+ gridCoord.size());
+						System.out.println("Size of String Coord ArrayList: "+ gridButton.size());
+						
+						System.out.println("Coordinates: "+ gridCoord);
+						System.out.print("String Coordinates: ");
+						for(int i=0; i<gridButton.size();i++)
+						{
+							System.out.print(gridButton.get(i).getActionCommand());
+						}
+						System.out.println();
+						
+						//put the two arrays into a linked hash map for easier calling in the furure
+						for(int i=0; i<gridCoord.size();i++)
+						{
+								linkage.put(gridButton.get(i).getActionCommand(), gridCoord.get(i));
+						}
+						System.out.println(linkage);
+
+						
+						//repaint the JPanel
+						frame.getContentPane().add(mainPanel);
+						mainPanel.revalidate();
+						mainPanel.repaint();
+					}
+				});
+				gridXComboBx.addItemListener(
+						new ItemListener()
+						{
+							public void itemStateChanged(ItemEvent event)
+							{
+								if(event.getStateChange()==ItemEvent.SELECTED)
+								{
+									chosenX = m[gridXComboBx.getSelectedIndex()];
+									
+								}
+							}
+						}
+				);
+				gridYComboBox.addItemListener(
+						new ItemListener()
+						{
+							public void itemStateChanged(ItemEvent event)
+							{
+								if(event.getStateChange()==ItemEvent.SELECTED)
+								{
+									chosenY = n[gridYComboBox.getSelectedIndex()];
+								}
+								
+							}
+						}
+				);
+				
+				
+
+
+//----------------------------------user select start node-----------------------		
+				
+			selectStartBtn.addActionListener(new ActionListener() 
+			{
+				public void actionPerformed(ActionEvent arg0) 
+				{
+					startButton = true;
+					System.out.println("start Button is chosen");
+					//set an icon ---> make sure they choose the grid first before they can choose other selection button
+						
+					selectGoalNodeBtn.setEnabled(false);
+					setBlocksBtn.setEnabled(false);	
+				}
+			});
+			selectGoalNodeBtn.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					goalButton = true;
+					System.out.println("Goal Button is chosen");
+					selectStartBtn.setEnabled(false);
+					setBlocksBtn.setEnabled(false);
+				}
+			});
+			setBlocksBtn.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					if(setBlocksBtn.isSelected())
+					{
+						blockButton=true;
+						System.out.println("blockButton is chosen");
+						selectStartBtn.setEnabled(false);
+						selectGoalNodeBtn.setEnabled(false);
+					}
+					else
+					{
+						selectStartBtn.setEnabled(true);
+						selectGoalNodeBtn.setEnabled(true);
+					}
+
+				}
+			});
+		startSearchBtn.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) 
+		{
+			//pass the data to generate the graph for the search 
+			GraphGenerator graphGen = new GraphGenerator();
+			
+			//remove duplicates
+			blockSet.addAll(block);
+			block.clear();
+			block.addAll(blockSet);
+			
+			LinkedHashMap<Integer, Node> graph = graphGen.genGraph(chosenX, chosenY, block);
+			//open up the visualisation UI pass the search type graph start and end nodes
+			VisualisationUI.openUI(searchType, graph, start, end);
+			frame.setVisible(false);
+			System.out.println(start.toString());
+			System.out.println(end.toString());
+			System.out.println(blockSet.toString());
+			System.out.println(block.toString());
+			}
+		});
+		
+		searchTypeComboBox.addItemListener(new ItemListener() 
+		{
+			public void itemStateChanged(ItemEvent event) 
+			{
+				if(event.getStateChange()==ItemEvent.SELECTED)
+				{
+					Object source = event.getSource();
+					if(source instanceof JComboBox)
+					{
+						//Set the search type to what the user has selected
+						JComboBox<String> jcb = (JComboBox<String>)source;
+						searchType = (String) jcb.getSelectedItem();
+					}
+				}
+			}
+		});
+	}
+}

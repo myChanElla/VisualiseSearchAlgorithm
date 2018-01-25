@@ -1,0 +1,64 @@
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+public class BFS 
+{
+	
+	PseudoCodeGen pseudoGen = new PseudoCodeGen();
+	PseudoCodeStrings pseudoStrings = new PseudoCodeStrings();
+	private int speed = 10;
+	/**
+	 * Method for carrying out Breadth First Search
+	 * @param start, the root node
+	 * @param goal, the target node
+	 **/
+	public Node bfs (Node start, Node goal)
+	{
+		try
+		{
+			pseudoGen.addPseudoText("Starting Breadth First Search \n");
+			Queue<Node> frontier = new LinkedList<Node>();
+			pseudoGen.addPseudoText("Creating LinkedList<Node> frontier \n");
+			Set<Node> visited =  new HashSet<Node>();
+			pseudoGen.addPseudoText("Creating HashSet<Node> visited \n");
+
+			frontier.add(start);
+			pseudoGen.addPseudoText(pseudoStrings.addNode + start.toString() + "\n");
+			TimeUnit.MILLISECONDS.sleep(speed);
+			pseudoGen.addPseudoText(pseudoStrings.whileLoop);
+	        while(!frontier.isEmpty()) 
+	        {
+				Node x = frontier.poll();
+				pseudoGen.addPseudoText(pseudoStrings.pollNode + x.toString() + "\n");
+				TimeUnit.MILLISECONDS.sleep(speed);
+				pseudoGen.addPseudoText(pseudoStrings.checkNode + x.toString() + "\n");
+				if(!visited.contains(x) && x.getOpen() == true) 
+				{
+					if (x == goal)
+					{ 
+						TimeUnit.MILLISECONDS.sleep(speed);
+						pseudoGen.addPseudoText(x.toString() + pseudoStrings.doesEqual + "}" + "\n");
+						pseudoGen.addPseudoText(pseudoStrings.completed);
+						return x; 
+					}
+					pseudoGen.addPseudoText(x.toString() + pseudoStrings.notEqual + "\n");
+					TimeUnit.MILLISECONDS.sleep(speed);
+					pseudoGen.addPseudoText(pseudoStrings.addVisited + x.toString() + "\n");
+					visited.add(x);
+					TimeUnit.MILLISECONDS.sleep(speed);
+					pseudoGen.addPseudoText(pseudoStrings.addChildren + x.toString() + "\n");
+					frontier.addAll(x.getChildren()); 
+				}
+			}
+	        pseudoGen.addPseudoText(pseudoStrings.failed + "}");
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		return null; //goal node not found 
+	}
+}

@@ -1,0 +1,19 @@
+import javax.swing.JTextArea;
+
+public class PseudoCodeGen 
+{
+	JTextArea pseudoText = VisualisationUI.getPseudoText();
+	
+	public void setPseudoText(String text)
+	{
+		pseudoText.setText(text);
+	}
+	
+	public void addPseudoText(String text){
+		pseudoText.append(text);
+	}
+	
+	public void setPseudoHTML(String html){
+		setPseudoText(html);
+	}
+}

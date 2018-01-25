@@ -1,0 +1,37 @@
+//Class used to control the running of the algorithm. Runs the algorithm on a new thread separate from the thread running the GUI.
+public class VisualisationController implements Runnable
+{
+	String searchType;
+	Node start;
+	Node goal;
+	
+	public VisualisationController(String search, Node start, Node goal)
+	{
+		searchType = search;
+		this.goal = goal;
+		this.start = start;
+	}
+	
+	public void beginSearch(String search, Node start, Node goal) 
+	{
+		//Switch based upon what search type has been chosen
+		switch(search)
+		{
+		case("Breadth First Search"):
+			BFS bfs = new BFS();
+			bfs.bfs(start, goal);
+		case("Depth First Search"):
+			DFS dfs = new DFS();
+			dfs.dfs(start, goal);
+		case("A* Search"):
+			Astar astar = new Astar();
+			astar.astar(start, goal);
+		}
+	}
+	
+	@Override
+	public void run() 
+	{
+		beginSearch(searchType, start, goal);
+	}
+}

@@ -1,0 +1,27 @@
+package visualisation.datastructure;
+import java.util.Set;
+
+import basics.Node;
+import visualisation.VisualisationUI;
+
+public class DataStructHelper {
+	DataStructVis dataStructPanel = VisualisationUI.getDataStructPanel();
+
+	public void createNode(Node label){
+		dataStructPanel.createNode(label);
+	}
+	
+	public void removeNode(Node label){
+		dataStructPanel.removeNode(label);
+	}
+	
+	public void addNodes(){
+		dataStructPanel.addNodes();
+	}
+	
+	public void addAll(Set<Node> nodes){
+		for(Node n : nodes){
+			dataStructPanel.createNode(n);
+		}
+	}
+}

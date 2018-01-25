@@ -1,0 +1,127 @@
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+public class DataStructVis extends JPanel {
+
+	private static int BUTTON_LOCATION_X;  // location x 
+	private static int BUTTON_LOCATION_Y;   // location y 
+	private static final int BUTTON_SIZE_X = 100;   
+	private static final int BUTTON_SIZE_Y = 25;
+	public ArrayList<JLabel> buttons = new ArrayList<>();
+	public int counter;
+	public Struct struct;
+    private static final long serialVersionUID = 1L;
+
+	public DataStructVis(Struct struct)
+	{
+		super();
+		this.counter = 0;
+		this.struct = struct;
+		this.setBounds(544, 430, 530, 342);
+		System.out.printf("%d\n",this.getWidth());
+		BUTTON_LOCATION_X = (this.getWidth()/2) - (BUTTON_SIZE_X /2);
+		BUTTON_LOCATION_Y = 250;
+		this.setBackground(Color.GRAY);
+		setLayout(null);
+		JLabel dataStructLabel = new JLabel();
+		dataStructLabel.setBounds(10, 10, 100, 30);
+		dataStructLabel.setText("Stack");
+		dataStructLabel.setFont(new Font("Serif", Font.BOLD, 18));
+		this.add(dataStructLabel);
+
+	}
+
+	public void createNode(Node node){
+		JLabel button = new JLabel(node.toString());
+		button.setFont(new Font("Arial",Font.BOLD,15));
+		button.setForeground(Color.WHITE);
+	    button.setHorizontalAlignment(SwingConstants.CENTER);
+
+		button.setBounds(BUTTON_LOCATION_X, BUTTON_LOCATION_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y);
+		this.add(button);
+		System.out.printf("adding %s\n",node.toString());
+		button.setVisible(true);
+		
+		this.buttons.add(button);
+		counter++;
+		BUTTON_LOCATION_Y -= 20;
+		
+		this.revalidate();
+		this.repaint();	
+	}
+
+	public void removeNode(Node node){
+		int index = -1;
+		for(JLabel b : this.buttons){
+			if(b.getText().equals(node.toString())){
+				System.out.printf("removing %s\n",node.toString());
+				remove(b);
+				counter--;
+				index = this.buttons.indexOf(b);
+			}
+			/*for(JButton bt : this.buttons){
+				if(this.buttons.indexOf(bt) > index && index!= -1){
+					b.setLocation(b.getX(), b.getY() + 25);
+				}
+			}*/
+		}
+		this.revalidate();
+		this.repaint();	
+	}
+
+	public void addNodes(){
+		switch(this.struct){
+		case STACK:
+			System.out.println("stack");
+			for(JLabel b : this.buttons){
+				this.add(b);
+				b.setVisible(true);
+			}
+			break;
+
+		case QUEUE:
+			System.out.println("queue");
+			break;
+
+		case PRIORITY_QUEUE:
+			System.out.println("p queue");
+			break;
+		}
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paintComponent(g);
+		switch(this.struct){
+		case STACK:
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(Color.WHITE);
+			g2.setStroke(new BasicStroke(5));
+			g2.drawLine(BUTTON_LOCATION_X - 15, 30, BUTTON_LOCATION_X - 15, this.getHeight()+30);
+			g2.drawLine(BUTTON_LOCATION_X + BUTTON_SIZE_X + 15, 30, BUTTON_LOCATION_X + BUTTON_SIZE_X + 15, this.getHeight()+30);
+
+			break;
+		case QUEUE:
+			break;
+		case PRIORITY_QUEUE:
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void setDataStruct(Struct s){
+		this.struct = s;
+	}
+}

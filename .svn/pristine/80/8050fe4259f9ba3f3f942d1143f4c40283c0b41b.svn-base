@@ -1,0 +1,203 @@
+package visualisation.datastructure;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.ArrayList;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import structures_dataTypes.Node;
+import structures_dataTypes.Struct;
+import uielements.UILabel;
+
+public class DataStructVis extends JPanel {
+
+	public static int BUTTON_LOCATION_X;  // location x 
+	public static int BUTTON_LOCATION_Y;   // location y 
+	private static final int BUTTON_SIZE_X = 100;   
+	private static final int BUTTON_SIZE_Y = 25;
+	public ArrayList<JLabel> buttons = new ArrayList<>();
+	public Struct struct;
+	private static final long serialVersionUID = 1L;
+
+	public DataStructVis(Struct struct)
+	{
+		super();
+		this.struct = struct;
+		this.setBounds(586, 430, 570, 342);
+		System.out.printf("%d\n",this.getWidth());
+		BUTTON_LOCATION_X = (this.getWidth()/2) - (BUTTON_SIZE_X /2);
+		BUTTON_LOCATION_Y = this.getHeight() - 92;
+		this.setBackground(Color.GRAY);
+		setLayout(null);
+	}
+
+	public void createNode(Node node){
+		switch (this.struct){
+		case STACK: {
+			if(this.buttons.size() == 12){
+				this.remove(this.buttons.get(0));
+				this.buttons.remove(0);
+				for(JLabel l : this.buttons){
+					l.setLocation(l.getX(), l.getY()+20);
+				}
+			}
+			UILabel button = new UILabel(node.toString(),15,new Color(210, 105, 30), Color.DARK_GRAY);
+			button.setHorizontalAlignment(SwingConstants.CENTER);
+			button.setBounds(BUTTON_LOCATION_X, getNextYAlignment(), BUTTON_SIZE_X, BUTTON_SIZE_Y);
+			this.add(button);
+			button.setVisible(true);
+			this.buttons.add(button);
+			break;
+		}
+		case QUEUE:{
+			UILabel button = new UILabel(node.toString(), 15,new Color(210, 105, 30), Color.DARK_GRAY);
+			button.setHorizontalAlignment(SwingConstants.CENTER);
+			button.setBounds(BUTTON_LOCATION_X, getNextYAlignment(), BUTTON_SIZE_X, BUTTON_SIZE_Y);
+			this.add(button);
+			button.setVisible(true);
+			this.buttons.add(button);
+			break;
+		}
+		default:
+			break;
+		}
+		this.revalidate();
+		this.repaint();	
+	}
+
+	public void removeNode(Node node){
+		switch (this.struct){
+		case STACK:{
+			int index = -1;
+			for(int i = this.buttons.size()-1;i>=0;i--){
+				JLabel b = this.buttons.get(i);
+				if(b.getText().equals(node.toString())){
+					b.setForeground(Color.RED);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					remove(b);
+					index = this.buttons.indexOf(b);
+					if(index!=-1){
+						this.buttons.remove(index);
+					}
+					break;
+				}
+			}
+			break;
+		}
+		case QUEUE:{
+			int index = -1;
+			for(int x=0;x<this.buttons.size();x++){
+				JLabel label = this.buttons.get(x);
+				if(label.getText().equals(node.toString())){
+					label.setForeground(Color.RED);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					remove(label);
+					index = this.buttons.indexOf(label);
+					if(index!=-1){
+						this.buttons.remove(index);
+					}
+					for(JLabel l : this.buttons){
+						l.setLocation(l.getX(), l.getY()+20);
+					}
+					break;
+				}
+			}
+			break;
+		}
+		default:
+			break;
+		}
+
+		this.revalidate();
+		this.repaint();	
+	}
+
+	public int getNextYAlignment(){
+		return BUTTON_LOCATION_Y - (this.buttons.size() * 20);
+	}
+
+	public void paintNodes(){
+		for(Component l : this.getComponents()){
+			if (l.getClass().equals(UILabel.class)){
+				JLabel label = (JLabel) l;
+				if (label.getText().startsWith("(")){
+					System.out.println("removing");
+					this.remove(label);
+				}
+			}
+		}
+		this.revalidate();
+		this.repaint();	
+		
+		for(int i=0; i<this.buttons.size();i++){
+			JLabel label = this.buttons.get(i);
+			label.setBounds(BUTTON_LOCATION_X, BUTTON_LOCATION_Y - (i * 20), BUTTON_SIZE_X, BUTTON_SIZE_Y);
+			this.add(label);
+			label.setVisible(true);
+		}
+		this.revalidate();
+		this.repaint();	
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(Color.DARK_GRAY);
+		g2.setStroke(new BasicStroke(2));
+		g2.drawLine(BUTTON_LOCATION_X - 15, 30, BUTTON_LOCATION_X - 15, this.getHeight()+30);
+		g2.drawLine(BUTTON_LOCATION_X + BUTTON_SIZE_X + 15, 30, BUTTON_LOCATION_X + BUTTON_SIZE_X + 15, this.getHeight()+30);		
+
+		String dataStructLabelText = "";
+		String descTxt = "";
+
+		switch (this.struct){
+		case STACK:
+			dataStructLabelText = "Stack (top 12 elements)";
+			descTxt = "Last In First Out";
+			break;
+		case QUEUE:
+			dataStructLabelText = "Queue";
+			descTxt = "First In First Out";
+			break;
+		case PRIORITY_QUEUE:
+			dataStructLabelText = "Priority Queue";
+			descTxt = "First In First Out with Priority";
+			break;
+		default:
+			break;
+
+		}
+		
+		UILabel dataStructLabel = new UILabel(dataStructLabelText, 15, Color.DARK_GRAY, null);	
+		UILabel desc = new UILabel(descTxt, 15, Color.DARK_GRAY, null);
+		dataStructLabel.setBounds(10, 10, 160, 30);
+		desc.setBounds(10, 40, 200, 30);
+		this.add(dataStructLabel);
+		this.add(desc);
+	}
+
+	public void setDataStruct(Struct s){
+		this.struct = s;
+	}
+
+	public void setButtons(ArrayList<JLabel> buttons) {
+		this.buttons = buttons;
+	}
+}

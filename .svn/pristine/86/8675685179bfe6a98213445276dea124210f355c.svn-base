@@ -1,0 +1,286 @@
+import java.awt.EventQueue;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.Color;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.util.LinkedHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.awt.event.ActionEvent;
+import javax.swing.JCheckBox;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+public class VisualisationUI 
+{
+
+	private JFrame frame;
+	private static String searchType;
+	private static JPanel pseudoCodePanel = new JPanel();
+	private static JTextArea pseudoCodetextPane = new JTextArea();
+	private static JPanel gridPanel = new JPanel();
+	private static Node start;
+	private static Node goal;
+	static String[] psstrings;
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void openUI(String search, LinkedHashMap<Integer, Node> graph, Node startN, Node endN)
+	{
+		//set up the search by getting the nodes from the graph and passing these to begin the search
+		start = graph.get(startN.coord.genHash());
+		goal = graph.get(endN.coord.genHash());
+		searchType = search;
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try 
+				{
+					VisualisationUI window = new VisualisationUI();
+					window.frame.setVisible(true);
+				}
+				catch (Exception e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public VisualisationUI() 
+	{
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() 
+	{
+		frame = new JFrame();
+		frame.getContentPane().setBackground(Color.DARK_GRAY);
+		frame.getContentPane().setForeground(Color.GRAY);
+		frame.setBounds(5, 5, 1100, 822);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		JPanel toolBarPanel = new JPanel();
+		toolBarPanel.setBackground(Color.LIGHT_GRAY);
+		toolBarPanel.setForeground(Color.YELLOW);
+		toolBarPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		toolBarPanel.setBounds(10, 11, 1064, 70);
+		frame.getContentPane().add(toolBarPanel);
+		toolBarPanel.setLayout(null);
+		
+		JButton startBtn = new JButton("Start");
+		startBtn.setBorderPainted(false);
+		startBtn.setBorder(null);
+		startBtn.setMargin(new Insets(0, 0, 0, 0));
+		startBtn.setContentAreaFilled(false);
+		ImageIcon startIcon = new ImageIcon(VisualisationUI.class.getResource("/imgs/start.png"));
+		Image startIcon2 = getScaledImage(startIcon.getImage(), 100, 75);
+		ImageIcon startIconRoll = new ImageIcon(VisualisationUI.class.getResource("/imgs/startRoll.png"));
+		Image startIcon2Roll = getScaledImage(startIconRoll.getImage(), 100, 75);
+		startBtn.setIcon(new ImageIcon(startIcon2));
+		startBtn.setRolloverIcon(new ImageIcon(startIcon2Roll));
+		startBtn.setBounds(718, 11, 95, 50);
+		toolBarPanel.add(startBtn);
+		//Create a new thread and start the search
+		startBtn.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				(new Thread(new VisualisationController(searchType, start, goal))).start();
+			}
+		});
+		
+		JButton speed2Btn = new JButton("");
+		speed2Btn.setBorderPainted(false);
+		speed2Btn.setBorder(null);
+		speed2Btn.setMargin(new Insets(0, 0, 0, 0));
+		speed2Btn.setContentAreaFilled(false);
+		ImageIcon speed2Icon = new ImageIcon(VisualisationUI.class.getResource("/imgs/speed2.png"));
+		Image speed2Icon2 = getScaledImage(speed2Icon.getImage(), 100, 75);
+		ImageIcon speed2IconRoll = new ImageIcon(VisualisationUI.class.getResource("/imgs/speed2Roll.png"));
+		Image speed2Icon2Roll = getScaledImage(speed2IconRoll.getImage(), 100, 75);
+		speed2Btn.setIcon(new ImageIcon(speed2Icon2));
+		speed2Btn.setRolloverIcon(new ImageIcon(speed2Icon2Roll));
+		speed2Btn.setBounds(930, 11, 95, 50);
+		toolBarPanel.add(speed2Btn);
+		speed2Btn.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				(new Thread(new VisualisationController(searchType, start, goal))).start();
+			}
+		});
+		
+		JButton speed1Btn = new JButton("");
+		speed1Btn.setBorderPainted(false);
+		speed1Btn.setBorder(null);
+		speed1Btn.setMargin(new Insets(0, 0, 0, 0));
+		speed1Btn.setContentAreaFilled(false);
+		ImageIcon speed1Icon = new ImageIcon(VisualisationUI.class.getResource("/imgs/speed1.png"));
+		Image speed1Icon2 = getScaledImage(speed1Icon.getImage(), 100, 75);
+		ImageIcon speed1IconRoll = new ImageIcon(VisualisationUI.class.getResource("/imgs/speed1Roll.png"));
+		Image speed1Icon2Roll = getScaledImage(speed1IconRoll.getImage(), 100, 75);
+		speed1Btn.setIcon(new ImageIcon(speed1Icon2));
+		speed1Btn.setRolloverIcon(new ImageIcon(speed1Icon2Roll));
+		speed1Btn.setBounds(864, 11, 75, 50);
+		toolBarPanel.add(speed1Btn);
+		
+		JButton pauseBtn = new JButton("");
+		pauseBtn.setBorderPainted(false);
+		pauseBtn.setBorder(null);
+		pauseBtn.setMargin(new Insets(0, 0, 0, 0));
+		pauseBtn.setContentAreaFilled(false);
+		ImageIcon pauseIcon = new ImageIcon(VisualisationUI.class.getResource("/imgs/pause.png"));
+		Image pauseIcon2 = getScaledImage(pauseIcon.getImage(), 90, 65);
+		ImageIcon pauseIconRoll = new ImageIcon(VisualisationUI.class.getResource("/imgs/pauseRoll.png"));
+		Image pauseIcon2Roll = getScaledImage(pauseIconRoll.getImage(), 90, 65);
+		pauseBtn.setIcon(new ImageIcon(pauseIcon2));
+		pauseBtn.setRolloverIcon(new ImageIcon(pauseIcon2Roll));
+		pauseBtn.setBounds(791, 11, 75, 50);
+		toolBarPanel.add(pauseBtn);
+		
+		JButton btnNewSearch = new JButton("New Search");
+		btnNewSearch.setMargin(new Insets(0, 0, 0, 0));
+		btnNewSearch.setContentAreaFilled(false);
+		btnNewSearch.setBounds(330, 25, 89, 23);
+		toolBarPanel.add(btnNewSearch);
+		btnNewSearch.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				GridMaker.linkage=null;
+				GridMaker.main(null);
+				System.out.println(GridMaker.gridCoord);
+				System.out.println(GridMaker.linkage);
+				frame.setVisible(false);
+			}
+		});
+		
+		JCheckBox chckbxGrid = new JCheckBox("Grid");
+		chckbxGrid.setSelected(true);
+		chckbxGrid.setBackground(Color.LIGHT_GRAY);
+		chckbxGrid.setForeground(Color.BLACK);
+		chckbxGrid.setBounds(447, 11, 53, 23);
+		toolBarPanel.add(chckbxGrid);
+		
+		JCheckBox chckbxPseudoCode = new JCheckBox("Pseudo Code");
+		chckbxPseudoCode.setSelected(true);
+		chckbxPseudoCode.setBackground(Color.LIGHT_GRAY);
+		chckbxPseudoCode.setForeground(Color.BLACK);
+		chckbxPseudoCode.setBounds(525, 11, 117, 23);
+		toolBarPanel.add(chckbxPseudoCode);
+		
+		JCheckBox chckbxGraph = new JCheckBox("Graph");
+		chckbxGraph.setSelected(true);
+		chckbxGraph.setBackground(Color.LIGHT_GRAY);
+		chckbxGraph.setForeground(Color.BLACK);
+		chckbxGraph.setBounds(447, 36, 72, 23);
+		toolBarPanel.add(chckbxGraph);
+		
+		JCheckBox chckbxDataStructure = new JCheckBox("Data Structure");
+		chckbxDataStructure.setSelected(true);
+		chckbxDataStructure.setBackground(Color.LIGHT_GRAY);
+		chckbxDataStructure.setForeground(Color.BLACK);
+		chckbxDataStructure.setBounds(525, 36, 117, 23);
+		toolBarPanel.add(chckbxDataStructure);
+		
+		JLabel SearchTypeLbl = new JLabel(searchType);
+		SearchTypeLbl.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 25));
+		SearchTypeLbl.setBounds(10, 11, 316, 50);
+		toolBarPanel.add(SearchTypeLbl);
+		
+		//Grid Panel
+		gridPanel.setBackground(Color.GRAY);
+		gridPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		gridPanel.setBounds(10, 85, 530, 342);
+		gridPanel.setLayout(null);
+		frame.getContentPane().add(gridPanel);
+		GridVisualiser grid = new GridVisualiser();
+		grid.setBounds(105, 10, 320, 320);
+		gridPanel.add(grid);
+		grid.setVisible(true);
+	
+		
+		
+		pseudoCodePanel.setBackground(Color.GRAY);
+		pseudoCodePanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		pseudoCodePanel.setBounds(544, 85, 530, 342);
+		frame.getContentPane().add(pseudoCodePanel);
+		pseudoCodePanel.setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 11, 510, 320);
+		pseudoCodePanel.add(scrollPane);
+		
+		pseudoCodetextPane.setForeground(Color.GREEN);
+		pseudoCodetextPane.setBackground(Color.BLACK);
+		scrollPane.setViewportView(pseudoCodetextPane);
+		
+		/**
+		Struct s = Struct.STACK;
+		DataStructVis dataStructPanel = new DataStructVis(s);
+		dataStructPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		frame.getContentPane().add(dataStructPanel);
+		dataStructPanel.createNode("1");
+		dataStructPanel.createNode("2");
+		dataStructPanel.createNode("3");
+		dataStructPanel.createNode("4");
+		dataStructPanel.createNode("5");
+		dataStructPanel.createNode("6");
+		dataStructPanel.addNodes();
+		**/
+		
+		JPanel graphPanel = new JPanel();
+		graphPanel.setBackground(Color.GRAY);
+		graphPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		graphPanel.setBounds(10, 430, 530, 342);
+		frame.getContentPane().add(graphPanel);
+	}
+	
+	
+	private Image getScaledImage(Image srcImg, int w, int h)
+	{
+	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+	    Graphics2D g2 = resizedImg.createGraphics();
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(srcImg, 5, 2, w, h, null);
+	    g2.dispose();
+	    return resizedImg;
+	}
+	
+	public static JTextArea getPseudoText()
+	{
+		return pseudoCodetextPane;
+	}
+	
+	public static int getPanelWidth()
+	{
+		return gridPanel.getWidth();
+	}
+	
+	public static int getPanelHeight()
+	{
+		return gridPanel.getWidth();
+	}
+}

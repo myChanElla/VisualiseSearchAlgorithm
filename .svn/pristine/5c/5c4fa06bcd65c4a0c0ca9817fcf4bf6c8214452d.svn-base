@@ -1,0 +1,187 @@
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.paint.Color;
+
+public class Node implements Comparable<Node>, ObservableValue<Color>
+{
+	//Coordinate of the node in the grid storing x and y values
+	public Coordinate coord;
+	//If the node can be searched or not true = can false = can't
+	public boolean open;
+	//The parent node of the current node 
+	public Node parent;
+	//Hex colour code of the node used for visualisation later
+	public String hexCC;
+	//A list of the children reachable from this node
+	public Set<Node> children = new LinkedHashSet<Node>();
+	//f value for A* search (distance to the goal)
+	public float fValue;
+	
+	public double priority;
+	public Color color;
+	public ArrayList<ChangeListener<? super Color>> listeners = new ArrayList<ChangeListener<? super Color>>();
+	
+	
+	public Node(Coordinate c, boolean traversable)
+	{
+		coord = c;
+		open = traversable;
+		hexCC = "#FFFFFF";
+		color = Color.WHITE;
+	}
+	
+	@Override
+	public String toString(){
+		return "(" + coord.getX() + ", " + coord.getY() + ")".replace("[", "").replace("]", "");
+	}
+	
+	public boolean equals(Node n2){
+		return (n2.getCoord() == this.coord);
+	}
+	
+	public void setOpen(Boolean bool)
+	{
+		open = bool;
+	}
+	
+	public boolean getOpen()
+	{
+		return open;
+	}
+	
+	public void  setParent(Node node)
+	{
+		parent = node;
+	}
+	
+	public Node getParent()
+	{
+		return parent;
+	}
+	
+	 public void setPriority(Double p) 
+	 {
+		 this.priority = p;
+	 }
+
+	 public double getPriority() 
+	 {
+		 return this.priority;
+	 }
+	
+	public void setColour(String hex)
+	{
+		hexCC = hex;
+	}
+	
+	public String getColour()
+	{
+		return hexCC;
+	}
+	public void setColor(Color c){
+		this.color = c;
+	}
+	public void addChild(Node node)
+	{
+		children.add(node);
+	}
+	public Color getColor(){
+		return color;
+	}
+	public Set<Node> getChildren()
+	{
+		return children;
+	}
+	
+	public Coordinate getCoord()
+	{
+		return coord;
+	}
+	
+	public void genFValue(Node goal)
+	{
+		float distanceX = Math.abs(getCoord().getX() - goal.getCoord().getX());
+		float distanceY = Math.abs(getCoord().getY() - goal.getCoord().getY());
+		fValue = distanceX + distanceY;		
+	}
+	
+	public float getFValue()
+	{
+		return fValue;
+	}
+
+	@Override
+	public int compareTo(Node n) 
+	{
+		float x = n.getFValue();
+		if(x == fValue)
+		{
+			return 0;
+		}
+		if(x > fValue)
+		{
+			return -1;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+	
+	@Override
+    public boolean equals(Object other) 
+    {
+        if (this == other)
+          return true;
+
+        if (!(other instanceof Node))
+          return false;
+
+        Node otherPoint = (Node) other;
+        return otherPoint.coord.x == coord.x && otherPoint.coord.y == coord.y && otherPoint.getOpen() == getOpen();
+    }
+	
+	@Override
+	public int hashCode() 
+	{
+	    int hashCode = coord.x;
+	    hashCode = 31 * hashCode + coord.y;
+	    return hashCode;
+	}
+
+	@Override
+	public void addListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addListener(ChangeListener<? super Color> listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeListener(ChangeListener<? super Color> listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Color getValue() {
+		// TODO Auto-generated method stub
+		return color;
+	}
+	
+	
+}

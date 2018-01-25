@@ -1,0 +1,79 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import javax.swing.JPanel;
+
+public class GridVisualiser extends JPanel
+{
+	private int x= GridMaker.chosenX;
+	private int y= GridMaker.chosenY;
+	private Node start= GridMaker.start;
+	private Node goal= GridMaker.end;
+	private ArrayList<Node> nonTraversable = GridMaker.obstacles;
+	private ArrayList<Coordinate> nodeSquares =  new ArrayList<Coordinate>();
+	
+	public void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		
+		//the width and height of the component
+		int width = getWidth();
+		int height = getHeight();
+		
+		//the width and height of each cell
+		int cellWidth = width/x;
+		int cellHeight = height/y;
+		
+		//draw the grid
+		for(int i=0; i < x; i++)
+		{
+			for (int j=0; j < y; j++)
+			{
+				Coordinate c = new Coordinate(i,j);
+				NodeSquare square = new NodeSquare(c);
+				square.setBounds(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
+				square.changeColour(Color.DARK_GRAY);
+				add(square);
+				//Change the colour of the start node
+				if(i==start.getCoord().getX())
+				{
+					if(j==start.getCoord().getY())
+					{
+						square.changeColour(Color.green);
+					}
+				}
+				
+				//Change the colour of the goal node
+				if(i==goal.getCoord().getX())
+				{
+					if(j==goal.getCoord().getY())
+					{
+						square.changeColour(Color.red);
+					}
+				}
+				//Change the colour of the nodes that can't be searched
+				for(int m=0; m<nonTraversable.size(); m++)
+				{
+					if(nonTraversable.get(m).getCoord().getX()==i)
+					{
+						if(nonTraversable.get(m).getCoord().getY()==j)
+						{
+							square.changeColour(Color.LIGHT_GRAY);
+						}
+					}
+				}
+				//Change the colour of the nodes that have been searched
+				if(nodeSquares.contains(square.coord))
+				{
+					square.changeColour(new Color(210, 105, 30));
+				}
+			}
+		}
+	}
+	//Add searched node to list and re-validate UI to show the change
+	public void changeColour(Coordinate c)
+	{
+		nodeSquares.add(c);
+		revalidate();
+	}
+}

@@ -1,0 +1,22 @@
+import java.util.LinkedHashMap;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.paint.Color;
+
+public class ColorListener implements ChangeListener<Color> {
+
+	public JFXPanel panel;
+	
+	ColorListener(LinkedHashMap<Integer, Node> graph, JFXPanel panel){
+		this.panel = panel;
+	}
+	@Override
+	public void changed(ObservableValue<? extends Color> observable, Color oldValue, Color newValue) {
+		
+		panel.repaint();
+		
+	}
+
+}

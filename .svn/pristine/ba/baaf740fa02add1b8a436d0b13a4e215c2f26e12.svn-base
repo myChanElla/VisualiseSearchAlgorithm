@@ -1,0 +1,26 @@
+package visualisation.graph;
+import java.util.LinkedHashMap;
+import java.util.Observable;
+import java.util.Observer;
+
+import basics.Node;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.paint.Color;
+
+public class ColorListener implements Observer {
+
+	public JFXPanel panel;
+	private FxNode fxnode;
+
+	ColorListener(LinkedHashMap<Integer, Node> graph, JFXPanel panel, FxNode fxnode){
+		this.panel = panel;
+		this.fxnode = fxnode;
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		fxnode.setColor((Color) arg1);
+	}
+	
+
+}

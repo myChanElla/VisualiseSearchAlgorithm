@@ -1,0 +1,40 @@
+package visualisation.graph;
+import basics.Node;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
+
+/**
+ * A class to create a node element in JavaFX
+ * @author Matt C.
+ *
+ */
+
+public class FxNode {
+	// How far apart from one other we want nodes to be
+	private int scalingFactor = 50;
+	private Circle circle;
+	private double circleCoordX;
+	private double circleCoordY;
+
+	
+	/**
+	 * @param node, The graph node passed in
+	 * @param panel, The panel that will contain the graph visualisation as a whole
+	 */
+	public FxNode(Node node, Pane panel){
+		circleCoordX = (node.coord.x * scalingFactor) +30; 
+		circleCoordY = (node.coord.y * scalingFactor) +30; 
+		this.circle = new Circle(circleCoordX, circleCoordY, 20, node.color);
+		Text label = new Text();
+		label.setX(circleCoordX-10);
+		label.setY(circleCoordY);
+		label.setText(node.coord.x + ", " + node.coord.y);
+		panel.getChildren().add(circle);
+		panel.getChildren().add(label);
+	}
+	public void setColor(Color color){
+		circle.setFill(color);
+	}
+}

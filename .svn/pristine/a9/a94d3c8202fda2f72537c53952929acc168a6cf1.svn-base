@@ -1,0 +1,44 @@
+package visualisation.graph;
+import java.util.LinkedHashMap;
+
+
+import basics.Node;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+
+@SuppressWarnings("serial")
+public class GraphVisualiser extends JFXPanel {
+	private LinkedHashMap<Integer,Node> graph;
+	private ScrollPane sc;
+	private BackgroundFill bf = new BackgroundFill(Color.GRAY, null, null);
+	private Background bg = new Background(bf);
+
+	/**
+	 * Create the panel.
+	 * @param graph, the graph to depict.
+	 */
+	public GraphVisualiser(LinkedHashMap <Integer, Node> graph) {
+		this.graph = graph;		
+	}
+	/**
+	 * Set up the FxGraph, wrap it in a ScrollPane which is put on the scene and displayed.
+	 */
+	public void initialise(){
+		FxGraph FXG = new FxGraph(graph, this);
+		sc = new ScrollPane();
+		sc.setBackground(bg);;
+		
+		sc.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+		sc.setHbarPolicy(ScrollBarPolicy.ALWAYS);
+		sc.setContent(FXG);
+		Scene scene = new Scene(sc, this.getWidth(), this.getHeight()); 
+		scene.setFill(Color.GRAY);
+		this.setScene(scene);
+	}
+	
+}

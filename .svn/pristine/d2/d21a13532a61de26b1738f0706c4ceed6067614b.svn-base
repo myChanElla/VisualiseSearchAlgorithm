@@ -1,0 +1,48 @@
+package visualisation;
+
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+//import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+public class UILabel extends JLabel {
+
+	public UILabel(String lblText, int fontSize)
+	{
+		setText(lblText);
+		setForeground(Color.LIGHT_GRAY);
+		setOpaque(true);
+		setBackground(new Color(210, 105, 30));
+		setFont(new Font("Tahoma", Font.PLAIN, fontSize));
+		setHorizontalAlignment(SwingConstants.CENTER);
+	}
+	
+	public void setGridBag(Container container, int gridx, int gridy, int gridWidth, int gridHeight)
+	{
+		GridBagConstraints gbc_lbl = new GridBagConstraints();
+		gbc_lbl.fill = GridBagConstraints.BOTH;
+		gbc_lbl.insets = new Insets(5, 5, 5, 5);
+		gbc_lbl.gridx = gridx;
+		gbc_lbl.gridy = gridy;
+		gbc_lbl.gridwidth = gridWidth;
+		gbc_lbl.gridheight= gridHeight;
+		container.add(this, gbc_lbl);
+	}
+	
+	public void setImage(String lblImage)
+	{
+		setOpaque(false);
+		setIcon(new ImageIcon(HelpUI.class.getResource(lblImage)));
+	}
+	
+}

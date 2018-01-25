@@ -1,0 +1,155 @@
+package uielements;
+
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
+import visualisation.grid.GridMaker;
+import visualisation.pseudocode.TextStrings;
+
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+/**
+ * 
+ * @author Chrystal - UI creation, design and re-factoring 
+ *
+ */
+public class MainMenuUI 
+{
+	private static JFrame frame;
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String args[])
+	{
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try {
+					new MainMenuUI();
+					frame.setVisible(true);
+					
+					//RunTree();
+				} catch (Exception e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Create the application.
+	 */
+	public MainMenuUI() 
+	{
+		initialize();
+	}
+	
+	/**
+	 * Initialise the contents of the frame.
+	 */
+	private void initialize() {
+		
+		Color backgroundcolor = new Color(50,62,79);
+		Color primarycolor = new Color(166,179,198);
+		Color accentcolor = new Color(0, 162, 232);
+		Color textcolor = Color.decode("#FAFAFA");
+		
+//---------------------------------------- Create frame with a GridBagLayout to allow components to resize dynamically ----------------------------------------
+		frame = new JFrame();
+		frame.getContentPane().setBackground(backgroundcolor);
+		frame.setBounds(100, 100, 846, 475);
+		frame.setLocationRelativeTo(null);
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{0, 0};
+		gridBagLayout.rowHeights = new int[]{0,0};
+		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+		frame.getContentPane().setLayout(gridBagLayout);
+	
+//---------------------------------------- Add page title ----------------------------------------
+		
+		UILabel lblVisualisingAi = new UILabel("Visualising AI", 30, backgroundcolor, primarycolor);
+		lblVisualisingAi.setGridBag(frame.getContentPane(), 0, 0, 10, 1);
+		lblVisualisingAi.setHorizontalAlignment(SwingConstants.CENTER);
+		
+//---------------------------------------- Create a Welcome panel to contain text information about our program ----------------------------------------
+		
+		UIPanel welcomePanel = new UIPanel(backgroundcolor);
+		welcomePanel.setGridBag(frame.getContentPane(), 0, 1, 5, 5, new Insets(5, 5, 5, 5));
+	
+		GridBagLayout gbl_welcomePanel = new GridBagLayout();
+		gbl_welcomePanel.columnWidths = new int[]{0, 0};
+		gbl_welcomePanel.rowHeights = new int[]{0, 0};
+		gbl_welcomePanel.columnWeights = new double[]{1.0};
+		gbl_welcomePanel.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+		welcomePanel.setLayout(gbl_welcomePanel);
+		
+		UITextPane txtpnWelcome = new UITextPane(29,"Welcome!");
+		txtpnWelcome.setGridBag(welcomePanel, 0, 0, 1, 1);
+	
+		
+		UITextPane txtProgramDescription = new UITextPane(16, TextStrings.menuText);
+		txtProgramDescription.setGridBag(welcomePanel, 0, 1, 1, 6);
+
+// ---------------------------------------- Create panel to store an image on ----------------------------------------
+		
+		UIPanel picturePanel = new UIPanel(backgroundcolor);
+		picturePanel.setGridBag(frame.getContentPane(), 5, 1 ,3 , 5, new Insets(5, 5, 5, 5));
+	
+		GridBagLayout gbl_PicturePanel = new GridBagLayout();
+		gbl_PicturePanel.columnWidths = new int[]{0,0};
+		gbl_PicturePanel.rowHeights = new int[]{0,0};
+		gbl_PicturePanel.columnWeights = new double[]{1.0,1.0};
+		gbl_PicturePanel.rowWeights = new double[]{1.0,1.0};
+		picturePanel.setLayout(gbl_PicturePanel);
+		
+		UILabel lblImage = new UILabel("", 0,backgroundcolor, backgroundcolor);
+		lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+		lblImage.setImage("/imgs/Search Tree.png");
+		lblImage.setGridBag(picturePanel, 0, 0, 2, 2);
+					
+// ---------------------------------------- Create Button Panel to contain buttons for start program and help ----------------------------------------
+						
+		UIPanel buttonPanel = new UIPanel(backgroundcolor);
+		buttonPanel.setGridBag(frame.getContentPane(), 8, 1, 2, 5, new Insets(5, 5, 5, 5));
+		
+		GridBagLayout gbl_buttonPanel = new GridBagLayout();
+		gbl_buttonPanel.columnWidths = new int[]{0,0};
+		gbl_buttonPanel.rowHeights = new int[]{0,0};
+		gbl_buttonPanel.columnWeights = new double[]{1.0, 1.0};
+		gbl_buttonPanel.rowWeights = new double[]{1.0, 1.0, 1.0,1.0, 1.0, 1.0,1.0, 1.0, 1.0,1.0};
+		buttonPanel.setLayout(gbl_buttonPanel);
+				
+		UIButton btnHelp = new UIButton("Help");
+		btnHelp.setGridBag(buttonPanel, 0, 0, 2, 1);
+		btnHelp.setToolTipText("Help");
+		
+		
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				HelpUI.loadHelp(0);
+			}
+		});
+		
+		UIButton btnStart = new UIButton("Go!");
+		btnStart.setGridBag(buttonPanel, 0, 9, 2, 1);
+		btnStart.setToolTipText("Start Creating Search");
+		
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				GridMaker.openUI();
+				frame.setVisible(false);
+			}
+		});
+	}
+}

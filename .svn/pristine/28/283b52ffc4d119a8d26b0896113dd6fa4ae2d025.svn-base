@@ -1,0 +1,46 @@
+import java.util.LinkedHashMap;
+
+import java.util.Set;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+
+
+
+/**
+ * Creates each node from a graph taken as param onto a JFX Pane.
+ * @author Matt C.
+ *
+ */
+public class FxGraph extends Pane {
+	private ColorListener cl;
+	FxNode currNode;
+	//FxNode allNodes[];
+	/**
+	 * @param graph, the graph from the UI that is drawn
+	 * @param panel, the JFX pane on which everything is drawn
+	 */
+	public FxGraph(LinkedHashMap<Integer, Node> graph, JFXPanel panel){
+		cl = new ColorListener(graph, panel);
+		//allNodes = new FxNode[graph.size()];
+		Set<Integer> keys = graph.keySet();
+		//int j = 0;
+		for (Integer i : keys){
+			currNode = new FxNode(graph.get(i), this);
+			Node node = graph.get(i);
+			node.addListener(new ChangeListener<Color>() {
+				@Override
+				public void changed(ObservableValue<? extends Color> observable,
+						Color oldValue, Color newValue) {
+					currNode.setColor(node.color);
+				}
+			});
+			node.addListener(cl);
+			//allNodes[j] = currNode;	
+			//j++;
+		}
+	}
+}

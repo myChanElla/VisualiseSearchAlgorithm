@@ -1,0 +1,14 @@
+package testpackage;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class VisualisationUI {
+
+	@Test
+	public void test() {
+		fail("Not yet implemented");
+	}
+
+}

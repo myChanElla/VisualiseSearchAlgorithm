@@ -1,0 +1,25 @@
+import java.util.LinkedHashMap;
+import java.util.Set;
+
+import javax.swing.JPanel;
+
+public class GraphView {
+
+	public static void printGraph(LinkedHashMap<Integer, Node> graph){
+		Set<Integer> keys = graph.keySet();
+		for (Integer i : keys)
+			System.out.println(graph.get(i));
+		}
+	
+	
+	public static void main(String[] args) {
+		//Create graph gen and generate a graph
+		GraphGenerator gen = new GraphGenerator();
+		LinkedHashMap<Integer, Node> graph = gen.genGraph(3, 3, new ArrayList<Node>());
+		printGraph(graph);
+		JPanel vis = new GraphVisualiser();
+		
+		//System.out.println(graph);
+	}
+
+}

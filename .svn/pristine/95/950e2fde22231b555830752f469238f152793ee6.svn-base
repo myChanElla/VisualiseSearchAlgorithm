@@ -1,0 +1,41 @@
+
+public class Coordinate 
+{
+	public int x;
+	public int y;
+	
+	public Coordinate(int x, int y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+	
+	public int getX()
+	{
+		return x;
+	}
+	
+	public int getY()
+	{
+		return y;
+	}
+	
+	@Override
+	public boolean equals(Object o) 
+	{
+		Coordinate c = (Coordinate)o;
+		return x == c.x && y == c.y;
+	}
+	
+	//Generates the hash used for the LinkedHashMap to store each node
+	public int genHash()
+	{
+		int hash = (x * 33) - (y) + (y * 31);
+		return hash;
+	}
+	
+	public String toString()
+	{
+		return "(" + x + "," + y + ")".replace("[", "").replace("]", "");
+	}
+}

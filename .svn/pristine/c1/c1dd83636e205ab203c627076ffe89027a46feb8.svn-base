@@ -1,0 +1,16 @@
+//Contains the strings used by the pseudoCodeGen to print the code as it runs
+public class PseudoCodeStrings 
+{
+	public String addNode = "frontier.add node: ";
+	public String pushNode = "frontier.push node: ";
+	public String whileLoop = "While the frontier !empty {\n";
+	public String pollNode = "frontier.poll node ";
+	public String popNode = "frontier.pop node ";
+	public String checkNode = "If !visited.contain node && node.getOpen == true, node is ";
+	public String addVisited = "visited.add node ";
+	public String notEqual = " != goal node ";
+	public String doesEqual = " == goal node ";
+	public String addChildren = "frontier.addAll children of node ";
+	public String completed = "Goal node found \n";
+	public String failed = "Goal node not found \n";
+}

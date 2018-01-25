@@ -1,0 +1,4 @@
+{
+	"dfs" : "public class DFSAlgorithm \n { \n \t public Node dfs (Node start, Node goal) \n \t { \n \t \t Stack<Node> frontier = new Stack<Node>(); \n \t \t Set<Node> visited =  new HashSet<Node>(); \n \t \t frontier.push(start); \n \t \t while(!frontier.empty()) \n \t \t { \n \t \t \t Node x = frontier.pop(); \n \t \t \t if(!visited.contains(x) && x.getOpen() == true) \n \t \t \t { \n \t \t \t \t if (x == goal) \n \t \t \t \t {	\n \t \t \t \t \t return x; \n \t \t \t \t } \n \t \t \t \t visited.add(x); \n \t \t \t \t frontier.addAll(x.getChildren()); \n \t \t \t } \n \t \t } \n \t \t return null; \n \t } \n }",
+	"bfs" : ""
+}

@@ -1,0 +1,143 @@
+package basics;
+import java.util.LinkedHashSet;
+import java.util.Observable;
+import java.util.Set;
+import javafx.scene.paint.Color;
+
+public class Node extends Observable implements Comparable<Node>
+{
+	//Coordinate of the node in the grid storing x and y values
+	public Coordinate coord;
+	//If the node can be searched or not true = can false = can't
+	public boolean open;
+	//The parent node of the current node 
+	public Node parent;
+	//JFX colour code of the node used for tree visualisation
+	public Color color;
+	//A list of the children reachable from this node
+	public Set<Node> children = new LinkedHashSet<Node>();
+	//f value for A* search (distance to the goal)
+	public float fValue;
+	
+	public double priority;
+		
+	
+	public Node(Coordinate c, boolean traversable)
+	{
+		coord = c;
+		open = traversable;
+		color = Color.WHITE;
+	}
+	
+	@Override
+	public String toString(){
+		return "(" + coord.getX() + ", " + coord.getY() + ")".replace("[", "").replace("]", "");
+	}
+	
+	public boolean equals(Node n2){
+		return (n2.getCoord() == this.coord);
+	}
+	
+	public void setOpen(Boolean bool)
+	{
+		open = bool;
+	}
+	
+	public boolean getOpen()
+	{
+		return open;
+	}
+	
+	public void  setParent(Node node)
+	{
+		parent = node;
+	}
+	
+	public Node getParent()
+	{
+		return parent;
+	}
+	
+	 public void setPriority(Double p) 
+	 {
+		 this.priority = p;
+	 }
+
+	public double getPriority() 
+	{
+		 return this.priority;
+	}
+	
+	public void addChild(Node node)
+	{
+		children.add(node);
+	}
+	public Color getColor(){
+		return color;
+	}
+	public void setColor(Color c){
+		this.color = c;
+		setChanged();
+		this.notifyObservers(c);
+	}
+	public Set<Node> getChildren()
+	{
+		return children;
+	}
+	
+	public Coordinate getCoord()
+	{
+		return coord;
+	}
+	
+	public void genFValue(Node goal)
+	{
+		float distanceX = Math.abs(getCoord().getX() - goal.getCoord().getX());
+		float distanceY = Math.abs(getCoord().getY() - goal.getCoord().getY());
+		fValue = distanceX + distanceY;		
+	}
+	
+	public float getFValue()
+	{
+		return fValue;
+	}
+
+	@Override
+	public int compareTo(Node n) 
+	{
+		float x = n.getFValue();
+		if(fValue > x)
+		{
+			return 1;
+		}
+		if(fValue < x)
+		{
+			return -1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	
+	@Override
+    public boolean equals(Object other) 
+    {
+        if (this == other)
+          return true;
+
+        if (!(other instanceof Node))
+          return false;
+
+        Node otherPoint = (Node) other;
+        return otherPoint.coord.x == coord.x && otherPoint.coord.y == coord.y && otherPoint.getOpen() == getOpen();
+    }
+	
+	@Override
+	public int hashCode() 
+	{
+	    int hashCode = coord.x;
+	    hashCode = 31 * hashCode + coord.y;
+	    return hashCode;
+	}
+}

@@ -1,0 +1,190 @@
+import java.awt.EventQueue;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Color;
+import java.awt.Font;
+
+/**
+ * 
+ * @author Chrystal
+ *
+ */
+public class HelpUI {
+
+	private JFrame frame;
+	/**
+	 * Launch the application.
+	 * @return 
+	 */
+	public static void loadHelp(){
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					HelpUI window = new HelpUI();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public HelpUI() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		
+// ----------------------------------------Create Frame with gridBagLayout in order to allow components to resize ----------------------------------------
+		
+		frame = new JFrame();
+		frame.getContentPane().setBackground(new Color(211, 211, 211));
+		frame.setBounds(100, 100, 990, 704);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{132,294};
+		gridBagLayout.rowHeights = new int[]{0,0};
+		gridBagLayout.columnWeights = new double[]{1.0,1.0,1,1.0};
+		gridBagLayout.rowWeights = new double[]{1.0,1.0,1.0,1.0};
+		frame.getContentPane().setLayout(gridBagLayout);
+		
+//---------------------------------------- Add Title label to frame ----------------------------------------  		
+		
+		JLabel lblHelp = new JLabel("Help");
+		lblHelp.setForeground(Color.LIGHT_GRAY);
+		GridBagConstraints gbc_lblHelp = new GridBagConstraints();
+		gbc_lblHelp.fill = GridBagConstraints.BOTH;
+		gbc_lblHelp.insets = new Insets(0, 0, 5, 5);
+		gbc_lblHelp.gridx = 0;
+		gbc_lblHelp.gridy = 0;
+		gbc_lblHelp.gridwidth = 4;
+		lblHelp.setOpaque(true);
+		lblHelp.setBackground(new Color(210, 105, 30));
+		lblHelp.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		frame.getContentPane().add(lblHelp	, gbc_lblHelp);
+		lblHelp.setHorizontalAlignment(SwingConstants.CENTER);
+							
+//---------------------------------------- Add Help image label to frame ----------------------------------------  		
+			
+		JLabel lblHelpImage = new JLabel("");
+		lblHelpImage.setIcon(new ImageIcon(HelpUI.class.getResource("/imgs/helpCreateGrid.png"))); // Original help image to be displayed
+		GridBagConstraints gbc_lblHelpImage = new GridBagConstraints();
+		gbc_lblHelpImage.fill = GridBagConstraints.BOTH;
+		gbc_lblHelpImage.insets = new Insets(0, 0, 5, 5);
+		gbc_lblHelpImage.gridwidth = 2;
+		gbc_lblHelpImage.gridheight = 1;
+		gbc_lblHelpImage.gridx = 1;
+		gbc_lblHelpImage.gridy = 1;
+		frame.getContentPane().add(lblHelpImage, gbc_lblHelpImage);
+			
+//---------------------------------------- Add Next button to frame ----------------------------------------  
+			
+		JButton btnNext = new JButton("Next ->");
+		
+		GridBagConstraints gbc_btnNext = new GridBagConstraints();
+		gbc_btnNext.anchor = GridBagConstraints.EAST;
+		gbc_btnNext.fill = GridBagConstraints.VERTICAL;
+		gbc_btnNext.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNext.gridx = 2;
+		gbc_btnNext.gridy = 2;
+		frame.getContentPane().add(btnNext, gbc_btnNext);
+		
+		changeButtonColour(btnNext);
+
+		btnNext.addActionListener(new ActionListener() {		// Takes user to the next help image
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				lblHelpImage.setIcon(new ImageIcon(HelpUI.class.getResource("/imgs/pause.png"))); 
+			}
+		});
+		
+//---------------------------------------- Add Back button to frame ----------------------------------------  		
+		
+		JButton btnBack = new JButton("<- Back");
+				
+		GridBagConstraints gbc_btnBack = new GridBagConstraints();
+		gbc_btnBack.anchor = GridBagConstraints.WEST;
+		gbc_btnBack.fill = GridBagConstraints.VERTICAL;
+		gbc_btnBack.insets = new Insets(0, 0, 5, 5);
+		gbc_btnBack.gridx = 1;
+		gbc_btnBack.gridy = 2;
+		frame.getContentPane().add(btnBack, gbc_btnBack);
+		
+		changeButtonColour(btnBack);	
+		
+		btnBack.addActionListener(new ActionListener() {	//Takes user to pervious image
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				lblHelpImage.setIcon(new ImageIcon(HelpUI.class.getResource("/imgs/helpCreateGrid.png")));
+			}
+		});
+
+//---------------------------------------- Add Close button to frame ----------------------------------------  		
+		
+		JButton btnClose = new JButton("Close");
+		
+		GridBagConstraints gbc_btnClose = new GridBagConstraints();
+		gbc_btnClose.fill = GridBagConstraints.BOTH;
+		gbc_btnClose.gridx = 3;
+		gbc_btnClose.gridy = 3;
+		frame.getContentPane().add(btnClose, gbc_btnClose);
+		
+		changeButtonColour(btnClose);
+		
+		btnClose.addActionListener(new ActionListener() { // Close HelpUI window
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				frame.setVisible(false);
+				MainMenuUI.main(null);
+		    }
+		});
+	}	
+	
+/**
+ * Sets up buttons original colours 
+ * Allows all the buttons on the page change colour depending on whether the mouse is over them or not
+ * @param button - a Jbutton that is being used 
+ */
+	public static void changeButtonColour (JButton button)
+	{
+		button.setForeground(new Color(210, 105, 30));
+		button.setBackground(Color.DARK_GRAY);
+		button.setOpaque(true); 
+		
+		button.addMouseListener(new MouseAdapter() // Button changes colour on mouse enter or exit
+				{
+		            public void mouseEntered(MouseEvent evt)
+		            {
+		            	button.setBackground(new Color(210, 105, 30));
+		            	button.setForeground(Color.DARK_GRAY);
+		            }
+		            public void mouseExited(MouseEvent evt)
+		            {
+		                button.setBackground(Color.DARK_GRAY);
+		            	button.setForeground(new Color(210, 105, 30));
+		            }
+				});
+	}
+}

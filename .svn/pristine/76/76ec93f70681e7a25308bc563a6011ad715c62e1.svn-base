@@ -1,0 +1,121 @@
+import java.awt.EventQueue;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+
+public class HelpUI {
+
+	private JFrame frame;
+
+	/**
+	 * Launch the application.
+	 * @return 
+	 */
+	public static void loadHelp(){
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					HelpUI window = new HelpUI();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public HelpUI() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 936, 601);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		JButton btnNext = new JButton("Next ->");
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnNext.setBounds(667, 505, 102, 32);
+		frame.getContentPane().add(btnNext);
+		
+		JButton btnBack = new JButton("<- Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnBack.setBounds(544, 505, 102, 32);
+		frame.getContentPane().add(btnBack);
+		
+		JButton btnClose = new JButton("Close");
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnClose.setBounds(790, 505, 102, 32);
+		frame.getContentPane().add(btnClose);
+		
+		JLabel lblHelpImage = new JLabel("");
+		lblHelpImage.setIcon(new ImageIcon(HelpUI.class.getResource("/imgs/helpCreateGrid.png")));
+		lblHelpImage.setBounds(79, 49, 774, 410);
+		frame.getContentPane().add(lblHelpImage);
+		
+		
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				frame.setVisible(false);
+				MainMenuUI.main(null);
+		
+				}
+			});
+		
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				
+				lblHelpImage.setIcon(new ImageIcon(HelpUI.class.getResource("/imgs/pause.png")));
+				}
+			});
+		
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				lblHelpImage.setIcon(new ImageIcon(HelpUI.class.getResource("/imgs/helpCreateGrid.png")));
+		
+				}
+			});
+		
+		
+		
+	}
+	private Image getScaledImage(Image srcImg, int w, int h)
+	{
+	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+	    Graphics2D g2 = resizedImg.createGraphics();
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(srcImg, 5, 2, w, h, null);
+	    g2.dispose();
+	    return resizedImg;
+	}
+	
+
+}

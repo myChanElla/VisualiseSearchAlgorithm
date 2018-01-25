@@ -1,0 +1,217 @@
+import java.awt.EventQueue;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Color;
+import java.awt.Font;
+
+public class HelpUI {
+
+	private JFrame frame;
+
+	/**
+	 * Launch the application.
+	 * @return 
+	 */
+	public static void loadHelp(){
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					HelpUI window = new HelpUI();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public HelpUI() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.getContentPane().setBackground(new Color(211, 211, 211));
+		frame.setBounds(100, 100, 990, 704);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{132,294};
+		gridBagLayout.rowHeights = new int[]{0,0};
+		gridBagLayout.columnWeights = new double[]{1.0,1.0,1,1.0};
+		gridBagLayout.rowWeights = new double[]{1.0,1.0,1.0,1.0};
+		frame.getContentPane().setLayout(gridBagLayout);
+		
+		JButton btnClose = new JButton("Close");
+		btnClose.setBackground(Color.DARK_GRAY);
+		btnClose.setOpaque(true); 
+		btnClose.setForeground(new Color(210, 105, 30));
+		
+			btnClose.addMouseListener(new MouseAdapter()
+			{
+	            public void mouseEntered(MouseEvent evt)
+	            {
+	            	
+	            	btnClose.setBackground(new Color(210, 105, 30));
+	            	btnClose.setForeground(Color.DARK_GRAY);
+	            }
+	            public void mouseExited(MouseEvent evt)
+	            {
+	                btnClose.setBackground(Color.DARK_GRAY);
+	            	btnClose.setForeground(new Color(210, 105, 30));
+	            }
+	   
+			});
+			
+		
+		JButton btnNext = new JButton("Next ->");
+		btnNext.setForeground(new Color(210, 105, 30));
+		btnNext.setBackground(Color.DARK_GRAY);
+		btnNext.setOpaque(true); 
+	
+		btnNext.addMouseListener(new MouseAdapter()
+		{
+            public void mouseEntered(MouseEvent evt)
+            {
+            	
+            	btnNext.setBackground(new Color(210, 105, 30));
+            	btnNext.setForeground(Color.DARK_GRAY);
+            }
+            public void mouseExited(MouseEvent evt)
+            {
+                btnNext.setBackground(Color.DARK_GRAY);
+            	btnNext.setForeground(new Color(210, 105, 30));
+            }
+   
+		});
+		
+		JLabel lblNewLabel = new JLabel("Help");
+		lblNewLabel.setForeground(Color.LIGHT_GRAY);
+		GridBagConstraints gbc_lblHelp = new GridBagConstraints();
+		gbc_lblHelp.fill = GridBagConstraints.BOTH;
+		gbc_lblHelp.insets = new Insets(0, 0, 5, 5);
+		gbc_lblHelp.gridx = 0;
+		gbc_lblHelp.gridy = 0;
+		gbc_lblHelp.gridwidth = 4;
+		lblNewLabel.setOpaque(true);
+		lblNewLabel.setBackground(new Color(210, 105, 30));
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		frame.getContentPane().add(lblNewLabel	, gbc_lblHelp);
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		
+		JLabel lblHelpImage = new JLabel("");
+		lblHelpImage.setIcon(new ImageIcon(HelpUI.class.getResource("/imgs/helpCreateGrid.png")));
+		GridBagConstraints gbc_lblHelpImage = new GridBagConstraints();
+		gbc_lblHelpImage.fill = GridBagConstraints.BOTH;
+		gbc_lblHelpImage.insets = new Insets(0, 0, 5, 5);
+		gbc_lblHelpImage.gridwidth = 2;
+		gbc_lblHelpImage.gridheight = 1;
+		gbc_lblHelpImage.gridx = 1;
+		gbc_lblHelpImage.gridy = 1;
+		frame.getContentPane().add(lblHelpImage, gbc_lblHelpImage);
+		
+		JButton btnBack = new JButton("<- Back");
+		btnBack.setForeground(new Color(210, 105, 30));
+		btnBack.setBackground(Color.DARK_GRAY);
+		btnBack.setOpaque(true); 
+		btnBack.addMouseListener(new MouseAdapter()
+		{
+            public void mouseEntered(MouseEvent evt)
+            {
+            	
+            	btnBack.setBackground(new Color(210, 105, 30));
+            	btnBack.setForeground(Color.DARK_GRAY);
+            }
+            public void mouseExited(MouseEvent evt)
+            {
+                btnBack.setBackground(Color.DARK_GRAY);
+            	btnBack.setForeground(new Color(210, 105, 30));
+            }
+   
+		});
+		
+		
+		
+		GridBagConstraints gbc_btnBack = new GridBagConstraints();
+		gbc_btnBack.anchor = GridBagConstraints.WEST;
+		gbc_btnBack.fill = GridBagConstraints.VERTICAL;
+		gbc_btnBack.insets = new Insets(0, 0, 5, 5);
+		gbc_btnBack.gridx = 1;
+		gbc_btnBack.gridy = 2;
+		frame.getContentPane().add(btnBack, gbc_btnBack);
+		
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				lblHelpImage.setIcon(new ImageIcon(HelpUI.class.getResource("/imgs/helpCreateGrid.png")));
+		
+				}
+			});
+		GridBagConstraints gbc_btnNext = new GridBagConstraints();
+		gbc_btnNext.anchor = GridBagConstraints.EAST;
+		gbc_btnNext.fill = GridBagConstraints.VERTICAL;
+		gbc_btnNext.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNext.gridx = 2;
+		gbc_btnNext.gridy = 2;
+		frame.getContentPane().add(btnNext, gbc_btnNext);
+		
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				
+				lblHelpImage.setIcon(new ImageIcon(HelpUI.class.getResource("/imgs/pause.png")));
+				}
+			});
+		GridBagConstraints gbc_btnClose = new GridBagConstraints();
+		gbc_btnClose.fill = GridBagConstraints.BOTH;
+		gbc_btnClose.gridx = 3;
+		gbc_btnClose.gridy = 3;
+		frame.getContentPane().add(btnClose, gbc_btnClose);
+		
+		
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				frame.setVisible(false);
+				MainMenuUI.main(null);
+		
+				}
+			});
+		
+		
+		
+	}
+	private Image getScaledImage(Image srcImg, int w, int h)
+	{
+	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+	    Graphics2D g2 = resizedImg.createGraphics();
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(srcImg, 5, 2, w, h, null);
+	    g2.dispose();
+	    return resizedImg;
+	}
+	
+
+}

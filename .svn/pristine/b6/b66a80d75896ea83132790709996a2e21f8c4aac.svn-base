@@ -1,0 +1,46 @@
+package visualisation.pseudocode;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import org.json.JSONObject;
+import org.json.JSONException;
+
+public class AlgorithmStrings 
+{
+	public static String parseFile(String jsonObj)
+	{
+		String text = "";
+		String jsonString = "";
+		BufferedReader br = null;
+		File file = new File("something");
+		System.out.println(file.getAbsolutePath());
+		
+		try 
+		{
+			String line;
+			br = new BufferedReader(new FileReader("txt/algorithms.txt"));
+			while ((line = br.readLine()) != null) 
+			{
+				jsonString += line + "\n";
+			}
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		} 
+		try 
+		{
+			JSONObject JSONobj = new JSONObject(jsonString);
+			text = JSONobj.getString(jsonObj);
+		} 
+		catch (JSONException e) 
+		{
+			e.printStackTrace();
+		}
+		return text;
+	}
+	
+	public static String dfsAlgoText = parseFile("dfs");
+}

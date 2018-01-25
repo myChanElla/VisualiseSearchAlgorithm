@@ -1,0 +1,237 @@
+package visualisation;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import java.awt.Font;
+
+import javax.swing.SwingConstants;
+
+import visualisation.grid.GridMaker;
+
+import javax.swing.JPanel;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+
+import javax.swing.JTextPane;
+/**
+ * 
+ * @author Chrystal - UI creation, design and re-factoring 
+ *
+ */
+public class MainMenuUI 
+{
+	private static JFrame frame;
+	private JTextPane txtpnWelcome;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String args[])
+	{
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try {
+					MainMenuUI window = new MainMenuUI();
+					frame.setVisible(true);
+					
+					//RunTree();
+				} catch (Exception e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Create the application.
+	 */
+	public MainMenuUI() 
+	{
+		initialize();
+	}
+	
+	/**
+	 * Initialise the contents of the frame.
+	 */
+	private void initialize() {
+		
+//---------------------------------------- Create frame with a GridBagLayout to allow components to resize dynamically ----------------------------------------
+		frame = new JFrame();
+		frame.getContentPane().setBackground(new Color(192, 192, 192));
+		frame.setBounds(100, 100, 846, 475);
+		frame.setLocationRelativeTo(null);
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{0, 0};
+		gridBagLayout.rowHeights = new int[]{0,0};
+		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+		frame.getContentPane().setLayout(gridBagLayout);
+	
+//---------------------------------------- Add page title ----------------------------------------
+		
+		JLabel lblVisualisingAi = new JLabel("Visualising AI");
+		lblVisualisingAi.setForeground(Color.LIGHT_GRAY);
+		GridBagConstraints gbc_lblVisualisingAi = new GridBagConstraints();
+		gbc_lblVisualisingAi.fill = GridBagConstraints.BOTH;
+		gbc_lblVisualisingAi.insets = new Insets(0, 0, 0, 0);
+		gbc_lblVisualisingAi.gridx = 0;
+		gbc_lblVisualisingAi.gridy = 0;
+		gbc_lblVisualisingAi.gridwidth= 10;
+		gbc_lblVisualisingAi.gridheight= 1;
+		lblVisualisingAi.setOpaque(true);
+		lblVisualisingAi.setBackground(new Color(210, 105, 30));
+		lblVisualisingAi.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		frame.getContentPane().add(lblVisualisingAi	, gbc_lblVisualisingAi);
+		lblVisualisingAi.setHorizontalAlignment(SwingConstants.CENTER);
+		
+//---------------------------------------- Create a Welcome panel to contain text information about our program ----------------------------------------
+		
+		JPanel welcomePanel = new JPanel();
+		GridBagConstraints gbc_welcomePanel = new GridBagConstraints();
+		SetupPanels(welcomePanel, gbc_welcomePanel, 0, 1, 5, 5);
+		GridBagLayout gbl_welcomePanel = new GridBagLayout();
+		gbl_welcomePanel.columnWidths = new int[]{0, 0};
+		gbl_welcomePanel.rowHeights = new int[]{0, 0};
+		gbl_welcomePanel.columnWeights = new double[]{1.0};
+		gbl_welcomePanel.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+		welcomePanel.setLayout(gbl_welcomePanel);
+		
+		txtpnWelcome = new JTextPane();
+		txtpnWelcome.setEditable(false);
+		txtpnWelcome.setText("Welcome!");
+		txtpnWelcome.setForeground(new Color(210, 105, 30));
+		txtpnWelcome.setFont(new Font("Tahoma", Font.PLAIN, 29));
+		txtpnWelcome.setBackground(Color.DARK_GRAY);
+		GridBagConstraints gbc_txtpnWelcome = new GridBagConstraints();
+		gbc_txtpnWelcome.insets = new Insets(0, 5, 0, 5);
+		gbc_txtpnWelcome.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtpnWelcome.gridx = 0;
+		gbc_txtpnWelcome.gridy = 0;
+		welcomePanel.add(txtpnWelcome, gbc_txtpnWelcome);
+		
+		JTextPane txtProgramDescription = new JTextPane();
+		txtProgramDescription.setEditable(false);
+		txtProgramDescription.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtProgramDescription.setText("This program has been developed in order to teach you how some searching algorithms work\r\n\r\nOur program will allow you to explore Depth First Search, Breadth First Search and A* Search \r\n\r\nJust click the start button to learn how these searches work.");
+		txtProgramDescription.setForeground(new Color(210, 105, 30));
+		txtProgramDescription.setBackground(Color.DARK_GRAY);
+		GridBagConstraints gbc_txtProgramDescription = new GridBagConstraints();
+		gbc_txtProgramDescription.insets = new Insets(5, 5, 5, 5);
+		gbc_txtProgramDescription.fill = GridBagConstraints.BOTH;
+		gbc_txtProgramDescription.gridheight = 6;
+		gbc_txtProgramDescription.gridx = 0;
+		gbc_txtProgramDescription.gridy = 1;
+		welcomePanel.add(txtProgramDescription, gbc_txtProgramDescription);
+
+// ---------------------------------------- Create panel to store an image on ----------------------------------------
+		
+		JPanel picturePanel = new JPanel();
+		GridBagConstraints gbc_picturePanel = new GridBagConstraints();
+		SetupPanels(picturePanel, gbc_picturePanel, 5, 1 ,5 , 3);
+	
+		GridBagLayout gbl_PicturePanel = new GridBagLayout();
+		gbl_PicturePanel.columnWidths = new int[]{0,0};
+		gbl_PicturePanel.rowHeights = new int[]{0,0};
+		gbl_PicturePanel.columnWeights = new double[]{1.0,1.0};
+		gbl_PicturePanel.rowWeights = new double[]{1.0,1.0};
+		picturePanel.setLayout(gbl_PicturePanel);
+		
+		
+		JLabel lblImage = new JLabel("");
+		lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+		lblImage.setIcon(new ImageIcon(HelpUI.class.getResource("/imgs/Search Tree.png"))); // Original help image to be displayed
+		GridBagConstraints gbc_image = new GridBagConstraints();
+		gbc_image.insets = new Insets(0, 0, 0,0);	
+		gbc_image.fill = GridBagConstraints.BOTH;
+		gbc_image.gridwidth = 2;
+		gbc_image.gridheight = 2;
+				
+		gbc_image.gridx = 0;
+		gbc_image.gridy = 0;
+		picturePanel.add(lblImage, gbc_image);
+		
+				
+// ---------------------------------------- Create Button Panel to contain buttons for start program and help ----------------------------------------
+						
+		JPanel buttonPanel = new JPanel();
+		GridBagConstraints gbc_buttonPanel = new GridBagConstraints();
+		SetupPanels(buttonPanel, gbc_buttonPanel, 8,1, 5,2); 
+		GridBagLayout gbl_buttonPanel = new GridBagLayout();
+		gbl_buttonPanel.columnWidths = new int[]{0,0};
+		gbl_buttonPanel.rowHeights = new int[]{0,0};
+		gbl_buttonPanel.columnWeights = new double[]{1.0, 1.0};
+		gbl_buttonPanel.rowWeights = new double[]{1.0, 1.0, 1.0,1.0, 1.0, 1.0,1.0, 1.0, 1.0,1.0};
+		buttonPanel.setLayout(gbl_buttonPanel);
+				
+		UIButton btnHelp = new UIButton("Help");
+		
+		SetupButtons(btnHelp,buttonPanel,0,0);
+				
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				HelpUI.loadHelp(0);
+			}
+		});
+		
+		UIButton btnStart = new UIButton("Start");
+		SetupButtons(btnStart,buttonPanel,0,9);
+		
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				GridMaker.openUI();
+				frame.setVisible(false);
+			}
+		});
+	}
+	
+	/**
+	 * SetupPanels method used to set up features of panels on the MainMenuUI
+	 * @param panel 	- panel to be added
+	 * @param gbc_panel - constraints to be added to the panel
+	 * @param x			- x coordinate of where the panel is to be place
+	 * @param y			- y coordinate of where the panel is to be place 
+	 * @param height	- Height of the panel
+	 * @param width		- Width of the panel 
+	 */
+	public static void SetupPanels(JPanel panel, GridBagConstraints gbc_panel  ,int x, int y, int height, int width){
+		panel.setBackground(Color.LIGHT_GRAY);
+		gbc_panel.gridheight = height;
+		gbc_panel.gridwidth = width;
+		gbc_panel.insets = new Insets(5, 5, 5, 5);
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = x;
+		gbc_panel.gridy = y;
+		frame.getContentPane().add(panel, gbc_panel);
+	}
+	/**
+	 * SetupButton sets up features of the buttons on the MainMenuUI
+	 * @param button - Button to be added to a panel
+	 * @param panel	 - The panel the button is to be added to 
+	 * @param x		 - The x coordinate of where the button is to be added
+	 * @param y		 - The y coordinate of where the button is to be added
+	 */
+	public static void SetupButtons(JButton button, JPanel panel, int x, int y){
+		
+		GridBagConstraints gbc_button = new GridBagConstraints();
+		gbc_button.fill = GridBagConstraints.BOTH;
+		gbc_button.insets = new Insets(5, 5, 5, 5);
+		gbc_button.gridx = x;
+		gbc_button.gridy = y;
+		gbc_button.gridwidth = 2;
+		panel.add(button, gbc_button);
+	}	
+}

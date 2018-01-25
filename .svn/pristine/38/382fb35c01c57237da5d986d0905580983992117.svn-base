@@ -1,0 +1,101 @@
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
+import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.JLabel;
+import java.awt.Font;
+
+public class MainMenuUI {
+
+	private JFrame frame;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					MainMenuUI window = new MainMenuUI();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public MainMenuUI() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.getContentPane().setBackground(Color.DARK_GRAY);
+		frame.setBounds(100, 100, 758, 475);
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
+		JButton btnStart = new JButton("Start");
+	
+
+		btnStart.setBounds(581, 355, 132, 57);
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		frame.getContentPane().setLayout(null);
+		frame.getContentPane().add(btnStart);
+		
+		JButton btnHelp = new JButton("?");
+		
+		btnHelp.setBounds(642, 24, 68, 57);
+		frame.getContentPane().add(btnHelp);
+		
+		JLabel lblVisualisingAi = new JLabel("Visualising AI");
+		lblVisualisingAi.setForeground(Color.LIGHT_GRAY);
+		lblVisualisingAi.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		lblVisualisingAi.setBounds(240, 12, 267, 65);
+		frame.getContentPane().add(lblVisualisingAi);
+		
+		JLabel lblDescription = new JLabel("Description of Our Program ");
+		lblDescription.setForeground(Color.LIGHT_GRAY);
+		lblDescription.setBounds(42, 109, 485, 187);
+		frame.getContentPane().add(lblDescription);
+		
+		
+		
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				frame.setVisible(false);
+				HelpUI.loadHelp();
+		
+				}
+			});
+		
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				frame.setVisible(false);
+				GridMaker.openUI();
+		
+				}
+			});
+		
+	}
+}

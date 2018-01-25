@@ -1,0 +1,21 @@
+import javax.swing.JTextPane;
+
+public class pseudoCodeGen 
+{
+	JTextPane pseudoText = VisualisationUI.getPseudoText();
+	
+	public void setPseudoText(String text)
+	{
+		pseudoText.setText(text);
+	}
+	
+	public void addPseudoText(String text){
+		pseudoText.setText(pseudoText.getText() + " " + text);
+	}
+	
+	public void setPseudoHTML(String html){
+		pseudoText.setContentType("text/html");
+		setPseudoText(html);
+	}
+	
+}

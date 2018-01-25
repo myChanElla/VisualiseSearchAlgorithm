@@ -1,0 +1,66 @@
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+public class DFS 
+{
+	
+	PseudoCodeGen pseudoGen = new PseudoCodeGen();
+	PseudoCodeStrings pseudoStrings = new PseudoCodeStrings();
+	private int speed = 10;
+	
+	/**
+	 * @param start node for search
+	 * @param goal node to find
+	 * @return goal node if found
+	 */
+	public Node dfs (Node start, Node goal) 
+	{
+		try
+		{
+			pseudoGen.addPseudoText("Starting Depth First Search \n");
+			Stack<Node> frontier = new Stack<Node>();
+			pseudoGen.addPseudoText("Creating Stack<Node> frontier \n");
+			Set<Node> visited =  new HashSet<Node>();
+			pseudoGen.addPseudoText("Creating HashSet<Node> visited \n");
+		
+			frontier.push(start);
+			pseudoGen.addPseudoText(pseudoStrings.pushNode + start.toString() + "\n");
+	
+			//for(Node n : frontier)
+			//{
+			//	System.out.println(n.getCoord().getX() + ", " + n.getCoord().getY());
+			//}
+			pseudoGen.addPseudoText(pseudoStrings.whileLoop);
+	        while(!frontier.empty()) 
+	        {
+				Node x = frontier.pop();
+				pseudoGen.addPseudoText(pseudoStrings.popNode + x.toString() + "\n");
+				TimeUnit.MILLISECONDS.sleep(speed);
+				pseudoGen.addPseudoText(pseudoStrings.checkNode + x.toString() + "\n");
+				if(!visited.contains(x) && x.getOpen() == true) 
+				{
+					if (x == goal) 
+					{	
+						TimeUnit.MILLISECONDS.sleep(speed);
+						pseudoGen.addPseudoText(x.toString() + pseudoStrings.doesEqual + "}" + "\n");
+						pseudoGen.addPseudoText(pseudoStrings.completed);
+						return x;
+					}
+					pseudoGen.addPseudoText(x.toString() + pseudoStrings.notEqual + "\n");
+					TimeUnit.MILLISECONDS.sleep(speed);
+					pseudoGen.addPseudoText(pseudoStrings.addVisited + x.toString() + "\n");
+					visited.add(x);
+					TimeUnit.MILLISECONDS.sleep(speed);
+					pseudoGen.addPseudoText(pseudoStrings.addChildren + x.toString() + "\n");
+					frontier.addAll(x.getChildren());
+				}
+			}
+	        pseudoGen.addPseudoText(pseudoStrings.failed + "}");
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		return null; //goal node not found
+	}
+}

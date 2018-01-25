@@ -1,0 +1,119 @@
+package uielements;
+
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+
+public class UIButton extends JButton {
+
+	private static final long serialVersionUID = 1L;
+	private Color primarybackground = new Color(166,179,198);
+	private Color secondarybackground = new Color(0, 162, 232);
+	private Color primarytext = new Color(50,62,79);
+	private Color secondarytext = Color.decode("#FAFAFA");
+
+	public UIButton(String btnText){
+
+		setText(btnText);
+		setBackground(primarybackground);
+		setForeground(primarytext);
+		setFont(new Font("Helvetica", Font.BOLD, 16));
+		setOpaque(true);
+		setBorder(BorderFactory.createLineBorder(primarybackground));
+		
+		addMouseListener(new MouseAdapter()
+		{
+			 public void mouseEntered(MouseEvent evt)
+            {
+        		setBackground(secondarybackground);
+        		setForeground(secondarytext);
+            }
+            public void mouseExited(MouseEvent evt)
+            {
+        		setBackground(primarybackground);
+        		setForeground(primarytext);
+            }
+            public void mousePressed(MouseEvent evt)
+            {
+            	setBackground(secondarybackground);
+            }
+            public void mouseReleased(MouseEvent evt)
+            {
+            	setBackground(secondarybackground);
+            }
+		});	
+	}
+	
+	//alternative constructor allowing us to optionally override default button colours
+	public UIButton(String btnText, Color primarybg, Color secondarybg, Color primarytextcol, Color secondarytextcol){
+		
+		this(btnText);
+		
+		if (primarybg != null){
+			this.primarybackground = primarybg;
+		}
+		if (secondarybg != null){
+			this.secondarybackground = secondarybg;
+		}
+		if (primarytextcol != null){
+			this.primarytext = primarytextcol;
+		}
+		if (secondarytextcol != null){
+			this.secondarytext = secondarytextcol;
+		}
+		
+		setBackground(primarybackground);
+		setForeground(primarytext);
+		setBorder(BorderFactory.createLineBorder(primarybackground));
+	}
+	
+	public void setImage(String staticImage, String onRollOver)
+	{
+		setBorderPainted(false);
+		setBorder(null);
+		setContentAreaFilled(false);
+		ImageIcon staticIcon = new ImageIcon(VisualisationUI.class.getResource(staticImage));
+		Image onRollIcon = getScaledImage(staticIcon.getImage(), 100, 75);
+		ImageIcon startIconRoll = new ImageIcon(VisualisationUI.class.getResource(onRollOver));
+		Image startIcon2Roll = getScaledImage(startIconRoll.getImage(), 100, 75);
+		setIcon(new ImageIcon(onRollIcon));
+		setRolloverIcon(new ImageIcon(startIcon2Roll));
+	
+	}
+	
+	private Image getScaledImage(Image srcImg, int w, int h)
+	{
+	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+	    Graphics2D g2 = resizedImg.createGraphics();
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(srcImg, 5, 2, w, h, null);
+	    g2.dispose();
+	    return resizedImg;
+	}
+	
+	public void setGridBag(Container container, int gridx, int gridy, int gridWidth, int gridHeight)
+	{
+		GridBagConstraints gbc_button = new GridBagConstraints();
+		gbc_button.fill = GridBagConstraints.BOTH;
+		gbc_button.insets = new Insets(5, 5, 5, 5);
+		gbc_button.gridx = gridx;
+		gbc_button.gridy = gridy;
+		gbc_button.gridwidth = gridWidth;
+		gbc_button.gridheight= gridHeight;
+		container.add(this, gbc_button);
+	}
+}
+
+

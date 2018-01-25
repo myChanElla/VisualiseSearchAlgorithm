@@ -1,0 +1,91 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+
+
+
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+
+public class GridVisualiser extends JPanel
+{
+	private int x= GridMaker.chosenX;
+	private int y= GridMaker.chosenY;
+	private Node start= GridMaker.start;
+	private Node goal= GridMaker.end;
+	private ArrayList<Node> nonTraversable = GridMaker.obstacles;
+	private ArrayList<Coordinate> nodeSquares =  new ArrayList<Coordinate>();
+	//private ArrayList<NodeSquare> searchNodes = VisualisationController
+	public GridVisualiser(){}
+	
+	public void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		
+		//the width and height of the component
+		int width = getWidth();
+		int height = getHeight();
+		
+		//the width and height of each cell
+		int cellWidth = width/x;
+		int cellHeight = height/y;
+		
+		//the space between the component and the grid.
+		int xMargin = (width - (cellWidth*x))/2;
+		int yMargin = (height - (cellHeight*y))/2;
+
+		//draw the grid
+		for(int i=0; i<x; i++)
+		{
+			for (int j=0; j<y; j++)
+			{
+				Coordinate c = new Coordinate(i,j);
+				NodeSquare square = new NodeSquare(c);
+				square.setBounds(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
+				//grid.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+				square.changeColour(Color.DARK_GRAY);
+				add(square);
+				
+				if(i==start.getCoord().getX())
+				{
+					if(j==start.getCoord().getY())
+					{
+						square.changeColour(Color.green);
+					}
+				}
+				
+				if(i==goal.getCoord().getX())
+				{
+					if(j==goal.getCoord().getY())
+					{
+						square.changeColour(Color.red);
+					}
+				}
+				
+				for(int m=0; m<nonTraversable.size(); m++)
+				{
+					if(nonTraversable.get(m).getCoord().getX()==j)
+					{
+						if(nonTraversable.get(m).getCoord().getY()==i)
+						{
+							square.changeColour(Color.LIGHT_GRAY);
+						}
+					}
+				}
+				if(nodeSquares.contains(square.coord))
+				{
+					square.changeColour(new Color(210, 105, 30));
+				}
+			}
+		}
+	}
+	
+	public void changeColour(Coordinate c)
+	{
+		nodeSquares.add(c);
+		revalidate();
+	}
+}

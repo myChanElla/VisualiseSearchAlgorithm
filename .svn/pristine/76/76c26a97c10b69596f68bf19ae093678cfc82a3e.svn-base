@@ -1,0 +1,39 @@
+/**
+	Construction of graphic node
+ */
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+
+public class DrawNode {
+
+	//private Line2D.Double edge;
+	public Ellipse2D.Double circleNode;
+
+	/**
+		Create a node
+	 */
+	public DrawNode(Node node){
+		//Draw a circle representing each node
+		circleNode = new Ellipse2D.Double(node.coord.x *10, node.coord.y*10, 10, 10);		
+		//Should use the below in a loop through child nodes to draw edges	
+	}
+
+	/**
+		Draw the node in graphics
+	 */
+	public void draw (Graphics2D g)
+	{
+		//Draw the circle representing the node
+		g.setColor(Color.BLACK);
+		g.draw(circleNode);
+
+		/*
+		//Draw edges?
+		g.setColor(Color.BLACK);
+		g.draw(edge);
+		 */
+	}
+
+}

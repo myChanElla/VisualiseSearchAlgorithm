@@ -1,0 +1,84 @@
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import javax.swing.JPanel;
+
+public class GridVisualiser 
+{
+	private List<Rectangle> cells;
+	String searchType;
+	int x;
+	int y;
+	Node start;
+	Node goal;
+	ArrayList<Node> nonTraversable;
+	
+	public GridVisualiser(String search, Node start, Node goal, ArrayList<Node> closedNodes, int x, int y)
+	{
+		searchType = search;
+		this.start = start;
+		this.goal = goal;
+		nonTraversable = closedNodes;
+		this.x = x;
+		this.y = y;
+	}
+	
+
+	public void executeSearch(LinkedHashMap<Integer, Node> graph, Node start, Node goal)
+	{
+		Coordinate startC = start.coord;
+		Coordinate goalC = goal.coord;
+		Node startNode = graph.get(startC.genHash());
+		Node goalNode = graph.get(goalC.genHash());
+		
+		if(searchType == "dfs")
+		{
+			DFS depth = new DFS();
+			Node end = depth.dfs(startNode, goalNode);
+		}
+		if(searchType == "bfs")
+		{
+			BFS breadth = new BFS();
+			Node end = breadth.bfs(startNode, goalNode);
+		}
+		if(searchType == "astar")
+		{
+			Astar astar = new Astar();
+			Node end = astar.astar(startNode, goalNode);
+		}
+		else
+		{
+			System.out.println("Error no search selected");
+		}
+	}
+
+	public static void changeColour(Node searched) 
+	{
+		
+	}
+	
+	public JPanel gridVisual()
+	{
+		
+		cells=new ArrayList<>(x*y);
+		
+		//create the height and width of grid
+        int width = VisualisationUI.getPanelWidth();
+        int height = VisualisationUI.getPanelHeight();
+
+        int cellWidth = width / x;
+        int cellHeight = height / y;
+
+		
+		return null;
+		
+	}
+	
+	public void paintComponent(Graphics g)
+	{
+		
+	}
+}
